@@ -10,28 +10,17 @@ class Wall:
         self._filled: List[List[Optional[Tile]]] = [[None for _ in range(self.SIZE)] for _ in range(self.SIZE)]
         self._expected: List[List[Optional[Tile]]] = [[None for _ in range(self.SIZE)] for _ in range(self.SIZE)]
 
-    def _is_filled(self, row: int, col: int) -> bool:
+    def is_filled(self, row: int, col: int) -> bool:
         return self._filled[row][col] is not None
 
-    def _is_expected(self, row: int, col: int, t: Tile) -> bool:
+    def is_expected(self, row: int, col: int, t: Tile) -> bool:
         return (self._expected[row][col] or t) == t
 
-    def _get_row_fills(self, i: int) -> set[Tile]:
+    def get_row_fills(self, i: int) -> set[Tile]:
         return set(t for t in self._filled[i] if t)
 
-    def _get_col_fills(self, col: int) -> set[Tile]:
+    def get_col_fills(self, col: int) -> set[Tile]:
         return set(self._filled[r][col] for r in range(self.SIZE) if self._filled[r][col])
-
-    def can_fill(self, row: int, col: int, t: Tile) -> bool:
-        if self._is_filled(row, col):
-            return False
-        if not self._is_expected(row, col, t):
-            return False
-        if t in self._get_row_fills(row):
-            return False
-        if t in self._get_col_fills(col):
-            return False
-        return True
 
 
 class FixedWall(Wall):
