@@ -1,13 +1,14 @@
 """Represents player's board"""
 
 from src.env.board.wall import Wall
+from src.env.board.pattern_lines import PatternLines
 
 
 class Board:
     def __init__(self, wall: Wall) -> None:
         self.points: int = 0
         self.wall = wall
-        self.pattern_lines = self._init_pattern_lines()
+        self.pattern_lines = PatternLines(self.wall.size)
         self.floor_line = self._init_floor_line()
 
     def update_points(self, value: int) -> None:

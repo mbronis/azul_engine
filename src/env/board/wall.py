@@ -1,9 +1,4 @@
-from typing import List, Optional
-
-from src.env.tiles import Tile
-
-
-WallTiles = List[List[Optional[Tile]]]
+from src.env.tiles import Tile, WallTiles
 
 
 class Wall:

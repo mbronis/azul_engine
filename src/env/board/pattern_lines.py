@@ -2,7 +2,7 @@ from typing import Optional, List
 from dataclasses import dataclass
 
 
-from src.env.tiles import Tile, TilesLine
+from src.env.tiles import Tile, SingleTileLine
 
 
 @dataclass
@@ -23,18 +23,19 @@ class PatternLine:
 
         return tile
 
-    def can_add_tiles_line(self, l: TilesLine) -> bool:
+    def can_add_tiles(self, l: SingleTileLine) -> bool:
         if (self.tile or l.tile) != l.tile:
             return False
         return True
 
-    def add_tiles_line(self, l: TilesLine) -> TilesLine:
+    def add_tiles(self, l: SingleTileLine) -> SingleTileLine:
         """Fills Pattern Line and returns remaining tiles."""
         if (self.tile or l.tile) != l.tile:
             msg = f"Failed to add TilesLine with {l.tile} "
             msg += f"to a {self.__class__.__name__} with {self.tile}."
             raise AttributeError(msg)
-        remainder = TilesLine(
+
+        remainder = SingleTileLine(
             tile=l.tile,
             size=max(0, l.size - (self.size - self.filled)),
         )
@@ -46,7 +47,7 @@ class PatternLine:
 
 class PatternLines:
     def __init__(self, size: int = 5) -> None:
-        self._lines = [PatternLine(row) for row in range(size)]
+        self._lines = [PatternLine(size=row_len) for row_len in range(size)]
 
     def flush(self) -> List[Optional[Tile]]:
         return [l.flush() for l in self._lines]
