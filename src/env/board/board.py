@@ -1,12 +1,12 @@
 """Represents player's board"""
-from dataclasses import dataclass
+
+from src.env.board.wall import Wall
 
 
-@dataclass
 class Board:
-    def __init__(self) -> None:
+    def __init__(self, wall: Wall) -> None:
         self.points: int = 0
-        self.wall = self._init_wall()
+        self.wall = wall
         self.pattern_lines = self._init_pattern_lines()
         self.floor_line = self._init_floor_line()
 
