@@ -30,6 +30,10 @@ class PatternLine:
 
     def add_tiles_line(self, l: TilesLine) -> TilesLine:
         """Fills Pattern Line and returns remaining tiles."""
+        if (self.tile or l.tile) != l.tile:
+            msg = f"Failed to add TilesLine with {l.tile} "
+            msg += f"to a {self.__class__.__name__} with {self.tile}."
+            raise AttributeError(msg)
         remainder = TilesLine(
             tile=l.tile,
             size=max(0, l.size - (self.size - self.filled)),
