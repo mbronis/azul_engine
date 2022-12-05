@@ -1,5 +1,6 @@
 """Represents game tiles"""
 from enum import Enum, auto
+from dataclasses import dataclass
 
 
 class Tile(Enum):
@@ -8,3 +9,9 @@ class Tile(Enum):
     RED = auto()
     BLACK = auto()
     SNOW = auto()
+
+
+@dataclass
+class TilesLine:
+    tile: Tile
+    size: int
