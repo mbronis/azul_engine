@@ -10,7 +10,7 @@ class Wall:
         self._filled = filled or [[None for _ in range(self.size)] for _ in range(self.size)]
         self._expected = expected or [[None for _ in range(self.size)] for _ in range(self.size)]
 
-    def can_fill(self, row: int, col: int, t: Tile) -> bool:
+    def can_add(self, row: int, col: int, t: Tile) -> bool:
         if self._is_filled(row, col):
             return False
         if not self._is_expected(row, col, t):
@@ -20,6 +20,12 @@ class Wall:
         if t in self._get_col_fills(col):
             return False
         return True
+
+    def can_add_to_row(self, row: int, t: Tile) -> bool:
+        for col in range(self.size):
+            if self.can_add(row, col, t):
+                return True
+        return False
 
     def _is_filled(self, row: int, col: int) -> bool:
         return self._filled[row][col] is not None

@@ -6,13 +6,14 @@ from src.env.board.wall import Wall
 @pytest.fixture
 def wall_a() -> Wall:
     return Wall(
+        size=5,
         filled=[
             [True, True, None, None, True],
             [True, None, None, None, None],
             [None, None, None, True, None],
             [None, None, True, None, True],
             [True, None, None, True, None],
-        ]
+        ],
     )
 
 
@@ -46,13 +47,14 @@ def test_neighbor_wall_a(scen, wall_a: Wall):
 @pytest.fixture
 def wall_b() -> Wall:
     return Wall(
+        size=5,
         filled=[
             [True, None, True, True, None],
             [None, None, None, None, None],
             [True, None, None, None, None],
             [True, None, None, None, None],
             [None, None, None, None, None],
-        ]
+        ],
     )
 
 

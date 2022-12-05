@@ -1,8 +1,7 @@
 import pytest
 
 from src.env.tiles import Tile
-from src.env.board.wall import Wall, FixedWall
-from src.env.rules.wall import can_fill
+from src.env.board.wall import Wall, FixedWall, FreeWall
 
 
 def fill(w: Wall):
@@ -11,8 +10,8 @@ def fill(w: Wall):
 
 
 @pytest.fixture
-def wall() -> Wall:
-    w = Wall()
+def wall() -> FreeWall:
+    w = FreeWall()
     fill(w)
     return w
 
@@ -64,8 +63,8 @@ scenarios = [
 
 
 @pytest.mark.parametrize("scen", scenarios, ids=(scen["name"] for scen in scenarios))
-def test_can_fill(scen, wall: Wall):
-    actual = can_fill(wall, scen["row"], scen["col"], scen["tile"])
+def test_can_add(scen, wall: Wall):
+    actual = wall.can_add(scen["row"], scen["col"], scen["tile"])
     assert actual == scen["expected"]
 
 
@@ -82,5 +81,5 @@ scenarios_fixed = scenarios + [
 
 @pytest.mark.parametrize("scen", scenarios_fixed, ids=(scen["name"] for scen in scenarios_fixed))
 def test_can_fill_fixed(scen, fixed_wall: FixedWall):
-    actual = can_fill(fixed_wall, scen["row"], scen["col"], scen["tile"])
+    actual = fixed_wall.can_add(scen["row"], scen["col"], scen["tile"])
     assert actual == scen["expected"]
