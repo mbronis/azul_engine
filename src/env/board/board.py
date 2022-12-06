@@ -21,20 +21,49 @@ class Board:
         return self.wall.size
 
     # ------------------
-    # -- Actions
+    # -- Actions Space
     # ------------------
-    def can_add(self, row: int, l: SingleTileLine) -> bool:
+    def can_fill_pattern_line(self, row: int, l: SingleTileLine) -> bool:
         if not self.pattern_lines.can_add(row, l):
             return False
-        if not self.wall.can_add_to_row(row, l.tile):
+        if not self.wall.can_add_tile_in_row(row, l.tile):
             return False
         return True
+
+    def can_tile_wall(self, row: int, col: int, t: Tile) -> bool:
+        return self.wall.can_add_tile(row, col, t)
+
+    # ------------------
+    # -- Actions
+    # ------------------
+    def fill_pattern_line(self, row: int, l: SingleTileLine):
+        """Fills pattern line and adds surplus to floor."""
+        surplus = self.pattern_lines.fill(row, l)
+        self.floor_line.add_broken_tiles(surplus)
+
+    def tile_wall(self, columns: List[int]) -> int:
+        """
+        Moves tiles from completed pattern lines and add them to the wall.
+
+        Arguments
+        ---------
+            columns : int
+                indicate wall columns to fill for each pattern line
+
+        Returns
+        -------
+            int : scores
+        """
+        flushed_tiles: List[Optional[Tile]] = self.pattern_lines.flush()
+        for row, column, tile in enumerate(zip(columns, flushed_tiles)):
+            if tile:
+
+
+    def finalize_round(self) -> bool:
+        flushed_tiles: List[Optional[Tile]] = self.pattern_lines.flush()
 
     # ------------------
     # -- Mechanics
     # ------------------
-    def add_score(self, value: int) -> None:
+    def update_score(self, value: int) -> None:
         self.score = max(0, self.score + value)
-
-    def finalize_round(self) -> bool:
-        flushed_tiles: List[Optional[Tile]] = self.pattern_lines.flush()
