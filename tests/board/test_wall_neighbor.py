@@ -35,9 +35,9 @@ scenarios = [
 
 @pytest.mark.parametrize("scen", scenarios, ids=(scen["name"] for scen in scenarios))
 def test_neighbor_wall_a(scen, wall_a: Wall):
-    act_row = wall_a.count_neighbors_row(scen["row"], scen["col"])
-    act_col = wall_a.count_neighbors_col(scen["row"], scen["col"])
-    act_total = wall_a.count_neighbors(scen["row"], scen["col"])
+    act_row = wall_a._count_neighbors_row(scen["row"], scen["col"])
+    act_col = wall_a._count_neighbors_col(scen["row"], scen["col"])
+    act_total = wall_a._count_neighbors(scen["row"], scen["col"])
     exp_row, exp_col, exp_total = scen["expected"]
     assert act_row == exp_row
     assert act_col == exp_col
@@ -74,9 +74,9 @@ scenarios = [
 
 @pytest.mark.parametrize("scen", scenarios, ids=(scen["name"] for scen in scenarios))
 def test_neighbor_wall_b(scen, wall_b: Wall):
-    act_row = wall_b.count_neighbors_row(scen["row"], scen["col"])
-    act_col = wall_b.count_neighbors_col(scen["row"], scen["col"])
-    act_total = wall_b.count_neighbors(scen["row"], scen["col"])
+    act_row = wall_b._count_neighbors_row(scen["row"], scen["col"])
+    act_col = wall_b._count_neighbors_col(scen["row"], scen["col"])
+    act_total = wall_b._count_neighbors(scen["row"], scen["col"])
     exp_row, exp_col, exp_total = scen["expected"]
     assert act_row == exp_row
     assert act_col == exp_col

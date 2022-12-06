@@ -1,6 +1,6 @@
 """Represents game tiles and tiles collections."""
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, List
 from copy import copy
 from enum import Enum, auto
 
@@ -11,6 +11,9 @@ class Tile(Enum):
     RED = auto()
     BLACK = auto()
     SNOW = auto()
+
+
+WallTiles = List[List[Optional[Tile]]]
 
 
 class SingleTileLine:
