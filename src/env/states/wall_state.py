@@ -11,9 +11,8 @@ class WallState:
     tiles_count: defaultdict(int)
 
     def _is_filled(self, row: int, col: int) -> bool:
-        return self._filled[row][col] is not None
+        return self.filled[row][col] is not None
 
-    # TODO: refactor unittests
     def count_neighbors_row(self, row: int, col: int) -> int:
         neighbors = 0
         for i in range(self.size - 1 - col):
@@ -39,5 +38,8 @@ class WallState:
             neighbors += 1
         return neighbors
 
-    def get_tile_count(self, t: Tile) -> int:
-        return self.tiles_count[t]
+    def count_neighbors(self, row: int, col: int) -> int:
+        return self.count_neighbors_row(row, col) + self.count_neighbors_col(row, col)
+
+    def get_tile_count(self, tile: Tile) -> int:
+        return self.tiles_count[tile]

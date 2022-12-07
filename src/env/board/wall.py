@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from src.env.tiles import Tile, WallTiles
 from src.env.scoring import Scorer
-from src.env.states.wall import WallState
+from src.env.states.wall_state import WallState
 
 
 class Wall:
@@ -10,7 +10,18 @@ class Wall:
         self.size = size
         self._filled = filled or [[None for _ in range(self.size)] for _ in range(self.size)]
         self._expected = expected or [[None for _ in range(self.size)] for _ in range(self.size)]
-        self._tiles_count = defaultdict(int)
+        self._tiles_count = self._init_tiles_count(filled)
+
+    def _init_tiles_count(self, filled: WallTiles = None):
+        tiles_count = defaultdict(int)
+        if filled is None:
+            return tiles_count
+
+        for row in filled:
+            for tile in row:
+                if tile:
+                    tiles_count[tile] += 1
+        return tiles_count
 
     # ------------------
     # -- Info
@@ -18,37 +29,6 @@ class Wall:
 
     def _is_filled(self, row: int, col: int) -> bool:
         return self._filled[row][col] is not None
-
-    # TODO: refactor unittests and remove
-    def _count_neighbors_row(self, row: int, col: int) -> int:
-        neighbors = 0
-        for i in range(self.size - 1 - col):
-            if not self._is_filled(row, col + i + 1):
-                break
-            neighbors += 1
-        for i in range(col):
-            if not self._is_filled(row, col - i - 1):
-                break
-            neighbors += 1
-        return neighbors
-
-    # TODO: refactor unittests and remove
-    def _count_neighbors_col(self, row: int, col: int) -> int:
-        neighbors = 0
-        for i in range(self.size - 1 - row):
-            print(f"{row + i + 1, col}: {self._is_filled(row + i + 1, col)}")
-            if not self._is_filled(row + i + 1, col):
-                break
-            neighbors += 1
-        for i in range(row):
-            if not self._is_filled(row - i - 1, col):
-                break
-            neighbors += 1
-        return neighbors
-
-    # TODO: refactor unittests and remove
-    def _count_neighbors(self, row: int, col: int) -> int:
-        return self._count_neighbors_row(row, col) + self._count_neighbors_col(row, col)
 
     # ------------------
     # -- Actions Space

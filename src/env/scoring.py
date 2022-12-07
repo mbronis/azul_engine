@@ -1,5 +1,5 @@
 from src.env.actions import AddWallTile
-from src.env.states.wall import WallState
+from src.env.states.wall_state import WallState
 
 # TODO: make abc
 class Scorer:

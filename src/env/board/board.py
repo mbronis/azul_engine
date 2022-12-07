@@ -6,7 +6,7 @@ from src.env.board.wall import Wall
 from src.env.board.pattern_lines import PatternLines
 from src.env.board.floor_line import FloorLine
 from src.env.actions import AddWallTile
-from src.env.states.wall import WallState
+from src.env.states.wall_state import WallState
 from src.env.scoring import Scorer
 
 
