@@ -5,6 +5,7 @@ from src.env.tiles import Tile, SingleTileLine, MultiTileLine
 
 def test_empty_line():
     m = MultiTileLine()
+    assert m.total_size == 0
     assert m.tiles == {}
 
 
@@ -16,6 +17,7 @@ def test_line_init():
     assert Tile.BLUE in m.tiles
     assert Tile.YELLOW not in m.tiles
 
+    assert m.total_size == 3
     assert m.tiles[Tile.BLACK].filled == 2
     assert m.tiles[Tile.BLUE].filled == 1
     assert m.tiles[Tile.YELLOW].filled == 0
@@ -28,6 +30,7 @@ def test_extend_empty():
     s.add_one(Tile.BLACK)
     m.extend(s)
 
+    assert m.total_size == 1
     assert Tile.BLACK in m.tiles
     assert m.tiles[Tile.BLACK].filled == 1
 
@@ -39,6 +42,7 @@ def test_extend_non_empty():
     s.add_one(Tile.BLACK)
     m.extend(s)
 
+    assert m.total_size == 2
     assert Tile.BLACK in m.tiles
     assert m.tiles[Tile.BLACK].filled == 2
 
@@ -48,6 +52,7 @@ def test_merge():
     other = MultiTileLine([Tile.BLACK, Tile.YELLOW])
     m.merge(other)
 
+    assert m.total_size == 4
     assert m.tiles[Tile.BLACK].filled == 2
     assert m.tiles[Tile.BLUE].filled == 1
     assert m.tiles[Tile.YELLOW].filled == 1
@@ -58,6 +63,7 @@ def test_get_existing():
     m = MultiTileLine([Tile.BLACK, Tile.BLACK, Tile.BLUE])
     l = m.get(Tile.BLACK)
 
+    assert m.total_size == 1
     assert m.tiles[Tile.BLACK].filled == 0
     assert m.tiles[Tile.BLUE].filled == 1
     assert l.tile == Tile.BLACK
@@ -68,6 +74,7 @@ def test_get_not_existing():
     m = MultiTileLine([Tile.BLACK, Tile.BLACK, Tile.BLUE])
     l = m.get(Tile.YELLOW)
 
+    assert m.total_size == 3
     assert m.tiles[Tile.BLACK].filled == 2
     assert m.tiles[Tile.BLUE].filled == 1
     assert l.tile == Tile.YELLOW

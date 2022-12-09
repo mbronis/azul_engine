@@ -111,3 +111,8 @@ class MultiTileLine:
         if t not in self.tiles:
             return SingleTileLine(tile=t)
         return self.tiles.pop(t)
+
+    @property
+    def total_size(self) -> int:
+        """Returns total number of filled tiles"""
+        return sum(t.filled for t in self.tiles.values())
