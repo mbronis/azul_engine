@@ -12,7 +12,7 @@ class PatternLines:
         return [line.flush() for line in self._lines]
 
     def can_add(self, row: int, l: SingleTileLine) -> bool:
-        return self._lines[row].can_add(l)
+        return self._lines[row].can_add_line(l)
 
     def fill(self, row: int, l: SingleTileLine) -> int:
         return self._lines[row].fill(l)

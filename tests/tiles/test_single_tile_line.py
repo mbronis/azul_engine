@@ -38,7 +38,7 @@ def test_single_tile_line_can_add(scen):
 
     line = SingleTileLine(line_filled, line_size, line_tile)
     other = SingleTileLine(other_filled, other_size, other_tile)
-    actual = line.can_add(other)
+    actual = line.can_add_line(other)
     expected = scen["expected"]
     assert actual == expected
 

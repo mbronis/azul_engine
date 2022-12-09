@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Optional, List
 from copy import copy
 from enum import Enum, auto
+from collections import defaultdict
 
 
 class Tile(Enum):
@@ -30,14 +31,17 @@ class SingleTileLine:
         self.size = size or max(1, filled)
         self.tile = tile
 
-    def can_add(self, l: SingleTileLine) -> bool:
-        if self.tile and (self.tile != l.tile):
+    def can_add_tile(self, tile: Tile) -> bool:
+        if self.tile and (self.tile != tile):
             return False
         return True
 
+    def can_add_line(self, l: SingleTileLine) -> bool:
+        return self.can_add_tile(l.tile)
+
     def fill(self, l: SingleTileLine) -> int:
         """Increases filled up to size and returns value of surplus."""
-        if not self.can_add(l):
+        if not self.can_add_line(l):
             msg = f"Tiles mismatch on fill - tied to fill {self.tile} with {l.tile}."
             raise AttributeError(msg)
         surplus = max(0, l.filled - (self.size - self.filled))
@@ -47,11 +51,20 @@ class SingleTileLine:
 
     def extend(self, l: SingleTileLine) -> None:
         """Increases filled and size if needed."""
-        if not self.can_add(l):
+        if not self.can_add_line(l):
             msg = f"Tiles mismatch on extend - tied to extend {self.tile} with {l.tile}."
             raise AttributeError(msg)
-        self.tile = l.tile
+        self.tile = self.tile or l.tile
         self.filled += l.filled
+        self.size = max(self.size, self.filled)
+
+    def add_one(self, t: Tile) -> None:
+        """Extends by one tile"""
+        if not self.can_add_tile(t):
+            msg = f"Tiles mismatch on add_one: tied to add {t} to {self.tile}."
+            raise AttributeError(msg)
+        self.tile = self.tile or t
+        self.filled += 1
         self.size = max(self.size, self.filled)
 
     def flush(self) -> Optional[Tile]:
@@ -64,29 +77,37 @@ class SingleTileLine:
 
         return tile
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.__dict__})"
 
-# class MultiTileLine:
-#     def __init__(self, size: int, filled: Optional[List[Optional[Tile]]] = None):
-#         self.size = size
-#         self._filled: List[Optional[Tile]] = filled or [None for _ in range(self.size)]
 
-#     @property
-#     def len(self) -> int:
-#         return len(t for t in self._filled if t)
+class MultiTileLine:
+    def __init__(self, tiles: List[Tile] = None):
+        self.tiles = defaultdict(lambda: SingleTileLine())
+        if not tiles:
+            return
 
-#     def _reset(self):
-#         self._filled = [None for _ in range(self.size)]
+        for t in tiles:
+            self.tiles[t].add_one(t)
 
-#     def flush(self) -> int:
-#         """Resets and returns len before reset."""
-#         l = self.len()
-#         self._reset()
-#         return l
+    def __repr__(self) -> str:
+        r = f"{self.__class__.__name__}("
+        for l in self.tiles.values():
+            r += "\n\t" + str(l)
+        r += ")"
+        return r
 
-#     def append_single_tile_line(self, l: SingleTileLine) -> SingleTileLine:
-#         """Fills self._filled and returns remainder."""
-#         pass
+    def extend(self, l: SingleTileLine):
+        """Extend tiles"""
+        self.tiles[l.tile].extend(l)
 
-#     def append_multi_tile_line(self, l: MultiTileLine) -> MultiTileLine:
-#         """Fills self._filled and returns remainder."""
-#         pass
+    def merge(self, m: MultiTileLine):
+        """Combine tiles of other MultiLineLine"""
+        for t, l in m.tiles.items():
+            self.tiles[t].extend(l)
+
+    def get(self, t: Tile) -> SingleTileLine:
+        """Returns all tiles of selected type."""
+        if t not in self.tiles:
+            return SingleTileLine(tile=t)
+        return self.tiles.pop(t)
