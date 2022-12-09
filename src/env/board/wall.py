@@ -1,7 +1,6 @@
 from collections import defaultdict
 
 from src.env.tiles import Tile, WallTiles
-from src.env.scoring import Scorer
 from src.env.states.wall_state import WallState
 
 
@@ -68,7 +67,11 @@ class Wall:
 
     def add_tile(self, row: int, col: int, t: Tile) -> None:
         """Adds tile to wall."""
+        if not self.can_add_tile(row, col, t):
+            msg = f"Cannot add {t} to wall at {row}/{col}."
+            raise AttributeError(msg)
         self._filled[row][col] = t
+        self._tiles_count[t] += 1
 
     # ------------------
     # -- Mechanics
