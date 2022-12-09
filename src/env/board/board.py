@@ -5,9 +5,9 @@ from src.env.tiles import Tile, SingleTileLine
 from src.env.board.wall import Wall
 from src.env.board.pattern_lines import PatternLines
 from src.env.board.floor_line import FloorLine
-from src.env.actions import AddWallTile
 from src.env.states.wall_state import WallState
 from src.env.scoring import Scorer
+from src.env.actions import AddWallTileAction, FillPatternLineAction
 
 
 class Board:
@@ -39,16 +39,24 @@ class Board:
     # ------------------
     # -- Actions
     # ------------------
-    def fill_pattern_line(self, row: int, l: SingleTileLine):
+    def fill_pattern_line(self, a: FillPatternLineAction):
         """Fills pattern line and adds surplus to floor."""
+        row, l = a.row, a.line
         surplus = self.pattern_lines.fill(row, l)
         self.floor_line.add_broken_tiles(surplus)
 
-    def add_wall_tile(self, a: AddWallTile):
+    def add_wall_tile(self, a: AddWallTileAction):
+        r, c, t = a.row, a.col, a.tile
+        if not self.can_tile_wall(r, c, t):
+            raise AttributeError("cannot add wall tile")
+
+        self.wall.add_tile(r, c, t)
         s: WallState = self.wall.get_state()
         score = Scorer.score_add_wall_tile(s, a)
         self.update_score(score)
-        self.add_wall_tile(a)
+
+    def finalize_round(self) -> bool:
+        flushed_tiles: List[Optional[Tile]] = self.pattern_lines.flush()
 
     # def tile_wall(self, columns: List[int]) -> int:
     #     """
@@ -66,9 +74,6 @@ class Board:
     #     flushed_tiles: List[Optional[Tile]] = self.pattern_lines.flush()
     #     for row, column, tile in enumerate(zip(columns, flushed_tiles)):
     #         if tile:
-
-    def finalize_round(self) -> bool:
-        flushed_tiles: List[Optional[Tile]] = self.pattern_lines.flush()
 
     # ------------------
     # -- Mechanics
