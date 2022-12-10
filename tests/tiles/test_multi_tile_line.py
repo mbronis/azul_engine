@@ -1,6 +1,7 @@
 import pytest
 
-from src.env.tiles import Tile, SingleTileLine, MultiTileLine
+from src.env.tiles import Tile
+from src.env.lines import SingleTileLine, MultiTileLine
 
 
 def test_empty_line():

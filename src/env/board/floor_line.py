@@ -1,5 +1,5 @@
 """Represents floor line"""
-from src.env.tiles import SingleTileLine, MultiTileLine
+from src.env.lines import SingleTileLine, MultiTileLine
 
 
 class FloorLine:

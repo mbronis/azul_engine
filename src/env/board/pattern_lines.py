@@ -1,7 +1,8 @@
 from typing import Optional, List
 
 
-from src.env.tiles import Tile, SingleTileLine
+from src.env.tiles import Tile
+from src.env.lines import SingleTileLine
 
 
 class PatternLines:

@@ -1,6 +1,7 @@
 import pytest
 
-from src.env.tiles import Tile, SingleTileLine
+from src.env.tiles import Tile
+from src.env.lines import SingleTileLine
 
 TILE = Tile.BLACK
 OTHER_TILE = Tile.SNOW

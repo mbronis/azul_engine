@@ -1,7 +1,8 @@
 """Represents player's board"""
 from typing import Optional, List
 
-from src.env.tiles import Tile, SingleTileLine
+from src.env.tiles import Tile
+from src.env.lines import SingleTileLine
 from src.env.board.wall import Wall
 from src.env.board.pattern_lines import PatternLines
 from src.env.board.floor_line import FloorLine

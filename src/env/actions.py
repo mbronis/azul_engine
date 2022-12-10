@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 
-from src.env.tiles import Tile, SingleTileLine
+from src.env.tiles import Tile
+from src.env.lines import SingleTileLine
 
 
 @dataclass
