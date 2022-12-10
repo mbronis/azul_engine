@@ -27,12 +27,9 @@ class SingleTileLine:
             return False
         return True
 
-    def can_add_line(self, l: SingleTileLine) -> bool:
-        return self.can_add_tile(l.tile)
-
     def fill(self, l: SingleTileLine) -> SingleTileLine:
         """Increases filled up to size and returns value of surplus."""
-        if not self.can_add_line(l):
+        if not self.can_add_tile(l.tile):
             msg = f"Tiles mismatch on fill - tied to fill {self.tile} with {l.tile}."
             raise AttributeError(msg)
         surplus = max(0, l.filled - (self.size - self.filled))
@@ -52,7 +49,7 @@ class SingleTileLine:
 
     def extend(self, l: SingleTileLine) -> None:
         """Increases filled and size if needed."""
-        if not self.can_add_line(l):
+        if not self.can_add_tile(l.tile):
             msg = f"Tiles mismatch on extend - tied to extend {self.tile} with {l.tile}."
             raise AttributeError(msg)
         self.tile = self.tile or l.tile

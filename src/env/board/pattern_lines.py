@@ -12,8 +12,8 @@ class PatternLines:
     def flush(self) -> List[Optional[Tile]]:
         return [line.flush() for line in self._lines]
 
-    def can_add(self, row: int, l: SingleTileLine) -> bool:
-        return self._lines[row].can_add_line(l)
+    def can_add_tile(self, row: int, t: Tile) -> bool:
+        return self._lines[row].can_add_tile(t)
 
     def fill(self, row: int, l: SingleTileLine) -> SingleTileLine:
         return self._lines[row].fill(l)

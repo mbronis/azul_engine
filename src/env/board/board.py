@@ -25,10 +25,10 @@ class Board:
     # ------------------
     # -- Actions Space
     # ------------------
-    def can_fill_pattern_line(self, row: int, l: SingleTileLine) -> bool:
-        if not self.pattern_lines.can_add(row, l):
+    def can_fill_pattern_line(self, row: int, t: Tile) -> bool:
+        if not self.pattern_lines.can_add_tile(row, t):
             return False
-        if not self.wall.can_add_tile_in_row(row, l.tile):
+        if not self.wall.can_add_tile_in_row(row, t):
             return False
         return True
 
@@ -38,11 +38,10 @@ class Board:
     # ------------------
     # -- Actions
     # ------------------
-    def fill_pattern_line(self, a: FillPatternLineAction):
+    def fill_pattern_line(self, row: int, l: SingleTileLine):
         """Fills pattern line and adds surplus to floor."""
-        row, l = a.row, a.line
-        surplus = self.pattern_lines.fill(row, l)
-        self.floor_line.add_broken_tiles(surplus)
+        broken_tiles = self.pattern_lines.fill(row, l)
+        self.floor_line.add_broken_tiles(broken_tiles)
 
     def add_wall_tile(self, a: AddWallTileAction):
         r, c, t = a.row, a.col, a.tile
