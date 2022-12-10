@@ -49,7 +49,6 @@ class AzulRules:
     factory_size: int = field(init=False)
     factories_to_players: dict[int, int] = field(init=False)
     num_factories: int = field(init=False)
-    floor_len: int = field(init=False)
 
     # wall tiling scores
     points_self: int = field(init=False)
@@ -72,7 +71,6 @@ class StandardAzulRules(AzulRules):
     tiles_count = 20
     factory_size = 4
     factories_to_players = {2: 5, 3: 7, 4: 9}
-    floor_len = 8
 
     points_self = 1
     points_neighbor = 1

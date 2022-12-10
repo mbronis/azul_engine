@@ -1,20 +1,22 @@
 """Represents floor line"""
-
-SIZE = 7
+from src.env.tiles import SingleTileLine, MultiTileLine
 
 
 class FloorLine:
     def __init__(self) -> None:
-        self.broken_tiles_count: int = 0
+        self.tiles = MultiTileLine()
         self.has_first_player_token: bool = False
 
-    def add_broken_tiles(self, value: int) -> None:
-        self.broken_tiles_count += value
-        self.broken_tiles_count = min(SIZE, self.broken_tiles_count)
+    def add_broken_tiles(self, broken_tiles: SingleTileLine) -> None:
+        self.tiles.extend(broken_tiles)
 
     def add_first_player_token(self) -> None:
         self.has_first_player_token = True
 
     def reset(self) -> None:
-        self.broken_tiles_count = 0
+        self.tiles = MultiTileLine()
         self.has_first_player_token = False
+
+    @property
+    def broken_tiles_count(self) -> int:
+        return self.tiles.total_size + int(self.has_first_player_token)
