@@ -148,6 +148,20 @@ scenarios_extend = [
             "line_tile": TILE,
         },
     },
+    {
+        "name": "extend within size other extra size",
+        "line_filled": 1,
+        "line_size": 2,
+        "line_tile": TILE,
+        "other_filled": 3,
+        "other_size": 6,
+        "other_tile": TILE,
+        "expected": {
+            "line_filled": 4,
+            "line_size": 6,
+            "line_tile": TILE,
+        },
+    },
 ]
 
 

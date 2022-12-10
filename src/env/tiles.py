@@ -68,7 +68,7 @@ class SingleTileLine:
             raise AttributeError(msg)
         self.tile = self.tile or l.tile
         self.filled += l.filled
-        self.size = max(self.size, self.filled)
+        self.size = max(self.filled, self.size, l.size)
 
     def add_one(self, t: Tile) -> None:
         """Extends by one tile."""
@@ -135,7 +135,7 @@ class MultiTileLine:
     def get_random(self, n: int) -> MultiTileLine:
         """Selects n tiles at random from tiles."""
         selected = []
-        while len(selected) < min(n, self.total_size):
+        while len(selected) < min(n, self.total_filled):
             tile = self._get_one_random()
             selected.append(tile)
         return MultiTileLine(selected)
@@ -150,7 +150,7 @@ class MultiTileLine:
             tile_line.reset()
 
     @property
-    def total_size(self) -> int:
+    def total_filled(self) -> int:
         """Returns total number of filled tiles"""
         return sum(t.filled for t in self.tiles.values())
 
