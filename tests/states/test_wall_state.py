@@ -1,4 +1,3 @@
-from collections import defaultdict
 import pytest
 
 from src.env.tiles import Tile
