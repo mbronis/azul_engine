@@ -5,8 +5,8 @@ from src.env.tiles import Tile, SingleTileLine
 
 
 class PatternLines:
-    def __init__(self, size: int = 5) -> None:
-        self._lines = [SingleTileLine(size=row_len) for row_len in range(size)]
+    def __init__(self, size: int) -> None:
+        self._lines = [SingleTileLine(size=row_len + 1) for row_len in range(size)]
 
     def flush(self) -> List[Optional[Tile]]:
         return [line.flush() for line in self._lines]
