@@ -19,4 +19,4 @@ class FloorLine:
 
     @property
     def broken_tiles_count(self) -> int:
-        return self.tiles.total_size + int(self.has_first_player_token)
+        return self.tiles.total_filled + int(self.has_first_player_token)
