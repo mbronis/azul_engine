@@ -9,16 +9,18 @@ from src.env.scoring import Scorer
 
 
 class AzulGame:
-    def __init__(self, rules: AzulRules) -> None:
+    def __init__(self, num_players: int, wall_type: str, rules: AzulRules) -> None:
         # TODO: inject dependency
         self.scorer = Scorer(rules)
 
         self.terminated: bool = None
+        self.num_players = num_players
         self.factory_size: int = rules.factory_size
+        self.num_factories = rules.get_num_factories(num_players)
 
-        wall = get_wall(rules.wall_type)
-        self.boards = [Board(wall)] * rules.num_players
-        self.factories = [MultiTileLine()] * rules.num_factories
+        wall = get_wall(wall_type)
+        self.boards = [Board(wall) for _ in range(self.num_players)]
+        self.factories = [MultiTileLine() for _ in range(self.num_factories)]
         self.mid_factory = MultiTileLine()
         self.discarded = MultiTileLine()
         self.tiles_bag = MultiTileLine()
@@ -52,4 +54,4 @@ class AzulGame:
 
     def get_state(self) -> GameState:
         # TODO: implement
-        pass
+        return {}, {}

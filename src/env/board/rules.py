@@ -10,11 +10,6 @@ class AzulRules:
 
     Arguments
     ---------
-    players : int
-        number of players. determines number of factories used
-    wall_size : int
-        size of wall side, determines also number and lengths of pattern lines.
-        Changing this value requires adapting available Tile types.
     tiles_count : int
         total number of tiles of each type used in a game
     factory_size : int
@@ -43,12 +38,9 @@ class AzulRules:
         Actual number of factories used in game
     """
 
-    num_players: int
-    wall_type: str
     tiles_count: int = field(init=False)
     factory_size: int = field(init=False)
     factories_to_players: dict[int, int] = field(init=False)
-    num_factories: int = field(init=False)
 
     # wall tiling scores
     points_self: int = field(init=False)
@@ -58,10 +50,8 @@ class AzulRules:
     points_color_fill: int = field(init=False)
     floor_penalties: List[int] = field(init=False)
 
-    wall_size: int = 5
-
-    def __post_init__(self):
-        self.num_factories = self.factories_to_players[self.num_players]
+    def get_num_factories(self, num_players: int) -> int:
+        return self.factories_to_players[num_players]
 
 
 @dataclass
@@ -80,8 +70,8 @@ class StandardAzulRules(AzulRules):
     floor_penalties = [-1, -1, -2, -2, -2, -3, -3]
 
 
-def get_rules(rule_set_name: str = "standard", wall_type: str = "fixed") -> AzulRules:
+def get_rules(rule_set_name: str = "standard") -> AzulRules:
     rule_sets = {
-        "standard": StandardAzulRules(wall_type),
+        "standard": StandardAzulRules(),
     }
     return rule_sets[rule_set_name]
