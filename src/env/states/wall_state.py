@@ -28,7 +28,6 @@ class WallState:
     def count_neighbors_col(self, row: int, col: int) -> int:
         neighbors = 0
         for i in range(self.size - 1 - row):
-            print(f"{row + i + 1, col}: {self._is_filled(row + i + 1, col)}")
             if not self._is_filled(row + i + 1, col):
                 break
             neighbors += 1
