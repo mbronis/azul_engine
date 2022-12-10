@@ -3,9 +3,10 @@ from __future__ import annotations
 
 import random
 from typing import Optional, List
-from copy import copy
+from copy import copy, deepcopy
 from enum import Enum, auto
-from collections import defaultdict
+
+# from src.env.states.tiles_state import SingleTileLineState
 
 
 class Tile(Enum):
@@ -99,14 +100,26 @@ class SingleTileLine:
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__dict__})"
 
+    # def get_state(self) -> SingleTileLineState:
+    #     return SingleTileLineState(filled=self.filled, size=self.size, tile=self.tile)
+
 
 class MultiTileLine:
     def __init__(self, tiles: List[Tile] = None):
-        self.tiles = defaultdict(lambda: SingleTileLine())
-        if not tiles:
-            return
+        # self.tiles = defaultdict(lambda: SingleTileLine())
+        # if not tiles:
+        #     return
+        # for t in tiles:
+        #     self.tiles[t].add_one(t)
+
+        self.tiles = {tile: SingleTileLine(tile=tile) for tile in Tile}
+
+    @classmethod
+    def from_tiles(cls, tiles: List[Tile]) -> MultiTileLine:
+        multi_line = MultiTileLine()
         for t in tiles:
-            self.tiles[t].add_one(t)
+            multi_line.tiles[t].add_one(t)
+        return multi_line
 
     def extend(self, l: SingleTileLine):
         """Extend tiles"""
@@ -119,9 +132,9 @@ class MultiTileLine:
 
     def get_all(self, t: Tile) -> SingleTileLine:
         """Returns all tiles of selected type."""
-        if t not in self.tiles:
-            return SingleTileLine()
-        return self.tiles.pop(t)
+        line = deepcopy(self.tiles[t])
+        self.tiles[t].filled = 0
+        return line
 
     def get_one(self, t: Tile) -> Tile:
         return self.tiles[t].get_one()
@@ -139,7 +152,7 @@ class MultiTileLine:
         while len(selected) < n:
             tile = self._get_one_random()
             selected.append(tile)
-        return MultiTileLine(selected)
+        return MultiTileLine.from_tiles(selected)
 
     def fill_max(self) -> None:
         """Fills all tiles up to the size."""

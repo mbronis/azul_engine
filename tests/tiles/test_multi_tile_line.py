@@ -6,18 +6,15 @@ from src.env.tiles import Tile, SingleTileLine, MultiTileLine
 def test_empty_line():
     m = MultiTileLine()
     assert m.total_filled == 0
-    assert m.tiles == {}
+    assert len(m.tiles) == len(Tile)
 
 
 def test_line_init():
     t = [Tile.BLACK, Tile.BLACK, Tile.BLUE]
-    m = MultiTileLine(t)
-
-    assert Tile.BLACK in m.tiles
-    assert Tile.BLUE in m.tiles
-    assert Tile.YELLOW not in m.tiles
+    m = MultiTileLine.from_tiles(t)
 
     assert m.total_filled == 3
+    assert len(m.tiles) == len(Tile)
     assert m.tiles[Tile.BLACK].filled == 2
     assert m.tiles[Tile.BLUE].filled == 1
     assert m.tiles[Tile.YELLOW].filled == 0
@@ -36,7 +33,7 @@ def test_extend_empty():
 
 
 def test_extend_non_empty():
-    m = MultiTileLine([Tile.BLACK])
+    m = MultiTileLine.from_tiles([Tile.BLACK])
     s = SingleTileLine()
 
     s.add_one(Tile.BLACK)
@@ -48,8 +45,8 @@ def test_extend_non_empty():
 
 
 def test_merge():
-    m = MultiTileLine([Tile.BLACK, Tile.BLUE])
-    other = MultiTileLine([Tile.BLACK, Tile.YELLOW])
+    m = MultiTileLine.from_tiles([Tile.BLACK, Tile.BLUE])
+    other = MultiTileLine.from_tiles([Tile.BLACK, Tile.YELLOW])
     m.merge(other)
 
     assert m.total_filled == 4
@@ -61,7 +58,7 @@ def test_merge():
 
 def test_merge_to_empty():
     m = MultiTileLine()
-    other = MultiTileLine([Tile.BLACK, Tile.BLUE])
+    other = MultiTileLine.from_tiles([Tile.BLACK, Tile.BLUE])
     m.merge(other)
 
     assert m.total_filled == 2
@@ -71,7 +68,7 @@ def test_merge_to_empty():
 
 
 def test_merge_other_empty():
-    m = MultiTileLine([Tile.BLACK, Tile.BLUE])
+    m = MultiTileLine.from_tiles([Tile.BLACK, Tile.BLUE])
     other = MultiTileLine()
     m.merge(other)
 
@@ -94,7 +91,7 @@ def test_merge_both_empty():
 
 @pytest.fixture
 def multi_line() -> MultiTileLine:
-    return MultiTileLine([Tile.BLACK, Tile.BLACK, Tile.BLUE])
+    return MultiTileLine.from_tiles([Tile.BLACK, Tile.BLACK, Tile.BLUE])
 
 
 def test_get_existing(multi_line: MultiTileLine):
@@ -113,7 +110,7 @@ def test_get_not_existing(multi_line: MultiTileLine):
     assert multi_line.total_filled == 3
     assert multi_line.tiles[Tile.BLACK].filled == 2
     assert multi_line.tiles[Tile.BLUE].filled == 1
-    assert l.tile == None
+    assert l.tile == Tile.YELLOW
     assert l.filled == 0
 
 
