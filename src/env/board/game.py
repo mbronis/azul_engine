@@ -1,7 +1,8 @@
 import random
 
 from src.env.board.rules import AzulRules
-from src.env.tiles import MultiTileLine, Tile, SingleTileLine
+from src.env.tiles import Tile
+from src.env.lines import SingleTileLine, MultiTileLine
 from src.env.board.board import Board
 from src.env.walls import get_wall
 from src.env.states.game_state import GameState
@@ -28,7 +29,7 @@ class AzulGame:
             l = SingleTileLine(tile=tile, size=rules.tiles_count, filled=0)
             self.tiles_bag.extend(l)
 
-    def reset(self, seed: int = 1234) -> GameState:
+    def reset(self, seed: int = None) -> GameState:
         self.terminated = False
         self._set_random(seed)
 
@@ -48,6 +49,9 @@ class AzulGame:
         for factory in self.factories:
             tiles = self.tiles_bag.get_random(n=self.factory_size)
             factory.merge(tiles)
+
+        # TODO: move to method for checking terminated state (with add check for row fill in wall)
+        self.terminated = self.tiles_bag.total_filled == 0
 
     def _set_random(self, seed: int) -> None:
         random.seed(seed)
