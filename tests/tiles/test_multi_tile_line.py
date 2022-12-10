@@ -59,6 +59,39 @@ def test_merge():
     assert m.tiles[Tile.SNOW].filled == 0
 
 
+def test_merge_to_empty():
+    m = MultiTileLine()
+    other = MultiTileLine([Tile.BLACK, Tile.BLUE])
+    m.merge(other)
+
+    assert m.total_size == 2
+    assert m.tiles[Tile.BLACK].filled == 1
+    assert m.tiles[Tile.BLUE].filled == 1
+    assert m.tiles[Tile.YELLOW].filled == 0
+
+
+def test_merge_other_empty():
+    m = MultiTileLine([Tile.BLACK, Tile.BLUE])
+    other = MultiTileLine()
+    m.merge(other)
+
+    assert m.total_size == 2
+    assert m.tiles[Tile.BLACK].filled == 1
+    assert m.tiles[Tile.BLUE].filled == 1
+    assert m.tiles[Tile.YELLOW].filled == 0
+
+
+def test_merge_both_empty():
+    m = MultiTileLine()
+    other = MultiTileLine()
+    m.merge(other)
+
+    assert m.total_size == 0
+    assert m.tiles[Tile.BLACK].filled == 0
+    assert m.tiles[Tile.BLUE].filled == 0
+    assert m.tiles[Tile.YELLOW].filled == 0
+
+
 def test_get_existing():
     m = MultiTileLine([Tile.BLACK, Tile.BLACK, Tile.BLUE])
     l = m.get(Tile.BLACK)
@@ -77,5 +110,14 @@ def test_get_not_existing():
     assert m.total_size == 3
     assert m.tiles[Tile.BLACK].filled == 2
     assert m.tiles[Tile.BLUE].filled == 1
-    assert l.tile == Tile.YELLOW
+    assert l.tile == None
     assert l.filled == 0
+
+
+def test_reset():
+    m = MultiTileLine([Tile.BLACK, Tile.BLACK, Tile.BLUE])
+    m.reset()
+
+    assert m.total_size == 0
+    assert Tile.BLACK in m.tiles
+    assert Tile.BLUE in m.tiles

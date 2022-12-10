@@ -14,5 +14,9 @@ class PatternLines:
     def can_add(self, row: int, l: SingleTileLine) -> bool:
         return self._lines[row].can_add_line(l)
 
-    def fill(self, row: int, l: SingleTileLine) -> int:
+    def fill(self, row: int, l: SingleTileLine) -> SingleTileLine:
         return self._lines[row].fill(l)
+
+    def reset(self) -> None:
+        for line in self._lines:
+            line.reset(reset_tile=True)

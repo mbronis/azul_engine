@@ -32,7 +32,7 @@ scenarios_can_add = [
 
 
 @pytest.mark.parametrize("scen", scenarios_can_add, ids=(scen["name"] for scen in scenarios_can_add))
-def test_single_tile_line_can_add(scen):
+def test_can_add(scen):
     line_filled, line_size, line_tile = scen.get("line_filled", 0), scen.get("line_size"), scen.get("line_tile")
     other_filled, other_size, other_tile = scen.get("other_filled", 0), scen.get("other_size"), scen.get("other_tile")
 
@@ -86,7 +86,7 @@ scenarios_fill = [
 
 
 @pytest.mark.parametrize("scen", scenarios_fill, ids=(scen["name"] for scen in scenarios_fill))
-def test_single_tile_line_fill(scen):
+def test_fill(scen):
     line_filled, line_size, line_tile = scen.get("line_filled", 0), scen.get("line_size"), scen.get("line_tile")
     other_filled, other_size, other_tile = scen.get("other_filled", 0), scen.get("other_size"), scen.get("other_tile")
 
@@ -97,12 +97,12 @@ def test_single_tile_line_fill(scen):
     actual = {
         "line_filled": line.filled,
         "line_tile": line.tile,
-        "reminder": reminder,
+        "reminder": reminder.filled,
     }
     assert actual == scen["expected"]
 
 
-def test_single_tile_line_fill_tile_mismatch_raises():
+def test_fill_tile_mismatch_raises():
     line = SingleTileLine(1, 2, TILE)
     other = SingleTileLine(1, 1, OTHER_TILE)
     with pytest.raises(AttributeError):
@@ -152,13 +152,13 @@ scenarios_extend = [
 
 
 @pytest.mark.parametrize("scen", scenarios_extend, ids=(scen["name"] for scen in scenarios_extend))
-def test_single_tile_line_extend(scen):
+def test_extend(scen):
     line_filled, line_size, line_tile = scen.get("line_filled", 0), scen.get("line_size"), scen.get("line_tile")
     other_filled, other_size, other_tile = scen.get("other_filled", 0), scen.get("other_size"), scen.get("other_tile")
 
     line = SingleTileLine(line_filled, line_size, line_tile)
     other = SingleTileLine(other_filled, other_size, other_tile)
-    reminder = line.extend(other)
+    line.extend(other)
 
     actual = {
         "line_filled": line.filled,
@@ -209,7 +209,7 @@ scenarios_flush = [
 
 
 @pytest.mark.parametrize("scen", scenarios_flush, ids=(scen["name"] for scen in scenarios_flush))
-def test_single_tile_line_flush(scen):
+def test_flush(scen):
     line_filled, line_size, line_tile = scen.get("line_filled", 0), scen.get("line_size"), scen.get("line_tile")
     line = SingleTileLine(line_filled, line_size, line_tile)
     returned_tile = line.flush()
@@ -221,3 +221,21 @@ def test_single_tile_line_flush(scen):
         "returned_tile": returned_tile,
     }
     assert actual == scen["expected"]
+
+
+def test_reset():
+    line = SingleTileLine(1, 2, Tile.BLACK)
+    line.reset()
+
+    assert line.filled == 0
+    assert line.size == 2
+    assert line.tile == Tile.BLACK
+
+
+def test_reset_with_tile():
+    line = SingleTileLine(1, 2, Tile.BLACK)
+    line.reset(reset_tile=True)
+
+    assert line.filled == 0
+    assert line.size == 2
+    assert line.tile == None

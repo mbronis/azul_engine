@@ -14,14 +14,12 @@ class Board:
     def __init__(self, wall: Wall) -> None:
         self.score: int = 0
         self.wall = wall
-        self.pattern_lines = PatternLines(self.get_size())
+        self.pattern_lines = PatternLines(self.wall.size)
         self.floor_line = FloorLine()
 
     # ------------------
     # -- Info
     # ------------------
-    def get_size(self) -> int:
-        return self.wall.size
 
     # ------------------
     # -- Actions Space
@@ -80,3 +78,8 @@ class Board:
     # ------------------
     def update_score(self, value: int) -> None:
         self.score = max(0, self.score + value)
+
+    def reset(self) -> None:
+        self.wall.reset()
+        self.pattern_lines.reset()
+        self.floor_line.reset()

@@ -77,6 +77,9 @@ class Wall:
     # -- Mechanics
     # ------------------
 
+    def reset(self) -> None:
+        self._filled = [[None for _ in range(self.size)] for _ in range(self.size)]
+
     # def _score(self, row: int, col: int, t: Tile) -> int:
     #     """Returns score for adding a tile to wall."""
     #     score = 0
