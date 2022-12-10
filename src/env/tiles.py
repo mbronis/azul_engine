@@ -134,8 +134,9 @@ class MultiTileLine:
 
     def get_random(self, n: int) -> MultiTileLine:
         """Selects n tiles at random from tiles."""
+        n = min(n, self.total_filled)
         selected = []
-        while len(selected) < min(n, self.total_filled):
+        while len(selected) < n:
             tile = self._get_one_random()
             selected.append(tile)
         return MultiTileLine(selected)
