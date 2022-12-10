@@ -223,8 +223,12 @@ def test_flush(scen):
     assert actual == scen["expected"]
 
 
-def test_reset():
-    line = SingleTileLine(1, 2, Tile.BLACK)
+@pytest.fixture
+def line() -> SingleTileLine:
+    return SingleTileLine(1, 2, Tile.BLACK)
+
+
+def test_reset(line: SingleTileLine):
     line.reset()
 
     assert line.filled == 0
@@ -232,10 +236,24 @@ def test_reset():
     assert line.tile == Tile.BLACK
 
 
-def test_reset_with_tile():
-    line = SingleTileLine(1, 2, Tile.BLACK)
+def test_reset_with_tile(line: SingleTileLine):
     line.reset(reset_tile=True)
 
     assert line.filled == 0
     assert line.size == 2
     assert line.tile == None
+
+
+def test_get_one(line: SingleTileLine):
+    tile = line.get_one()
+
+    assert tile == Tile.BLACK
+    assert line.filled == 0
+    assert line.size == 2
+    assert line.tile == Tile.BLACK
+
+
+def test_get_one_from_empty(line: SingleTileLine):
+    line.get_one()
+    with pytest.raises(RuntimeError):
+        line.get_one()

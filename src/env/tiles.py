@@ -1,5 +1,7 @@
 """Represents game tiles and tiles collections."""
 from __future__ import annotations
+
+import random
 from typing import Optional, List
 from copy import copy
 from enum import Enum, auto
@@ -69,13 +71,20 @@ class SingleTileLine:
         self.size = max(self.size, self.filled)
 
     def add_one(self, t: Tile) -> None:
-        """Extends by one tile"""
+        """Extends by one tile."""
         if not self.can_add_tile(t):
             msg = f"Tiles mismatch on add_one: tied to add {t} to {self.tile}."
             raise AttributeError(msg)
         self.tile = self.tile or t
         self.filled += 1
         self.size = max(self.size, self.filled)
+
+    def get_one(self) -> Tile:
+        """Returns single tile."""
+        if not self.filled:
+            raise RuntimeError("Tried to get_one from empty SingleTileLine")
+        self.filled -= 1
+        return self.tile
 
     def flush(self) -> Optional[Tile]:
         """Clears filled if full and returns Tile"""
@@ -108,11 +117,28 @@ class MultiTileLine:
         for t, l in m.tiles.items():
             self.tiles[t].extend(l)
 
-    def get(self, t: Tile) -> SingleTileLine:
+    def get_all(self, t: Tile) -> SingleTileLine:
         """Returns all tiles of selected type."""
         if t not in self.tiles:
             return SingleTileLine()
         return self.tiles.pop(t)
+
+    def get_one(self, t: Tile) -> Tile:
+        return self.tiles[t].get_one()
+
+    def _get_one_random(self) -> Tile:
+        """Returns single tile selected at random from filled tiles."""
+        weights = [self.tiles[t].filled for t in Tile]
+        tile = random.choices(list(Tile), weights=weights)[0]
+        return self.get_one(tile)
+
+    def get_random(self, n: int) -> MultiTileLine:
+        """Selects n tiles at random from tiles."""
+        selected = []
+        while len(selected) < min(n, self.total_size):
+            tile = self._get_one_random()
+            selected.append(tile)
+        return MultiTileLine(selected)
 
     def fill_max(self) -> None:
         """Fills all tiles up to the size."""

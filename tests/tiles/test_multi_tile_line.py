@@ -92,32 +92,63 @@ def test_merge_both_empty():
     assert m.tiles[Tile.YELLOW].filled == 0
 
 
-def test_get_existing():
-    m = MultiTileLine([Tile.BLACK, Tile.BLACK, Tile.BLUE])
-    l = m.get(Tile.BLACK)
+@pytest.fixture
+def multi_line() -> MultiTileLine:
+    return MultiTileLine([Tile.BLACK, Tile.BLACK, Tile.BLUE])
 
-    assert m.total_size == 1
-    assert m.tiles[Tile.BLACK].filled == 0
-    assert m.tiles[Tile.BLUE].filled == 1
+
+def test_get_existing(multi_line: MultiTileLine):
+    l = multi_line.get_all(Tile.BLACK)
+
+    assert multi_line.total_size == 1
+    assert multi_line.tiles[Tile.BLACK].filled == 0
+    assert multi_line.tiles[Tile.BLUE].filled == 1
     assert l.tile == Tile.BLACK
     assert l.filled == 2
 
 
-def test_get_not_existing():
-    m = MultiTileLine([Tile.BLACK, Tile.BLACK, Tile.BLUE])
-    l = m.get(Tile.YELLOW)
+def test_get_not_existing(multi_line: MultiTileLine):
+    l = multi_line.get_all(Tile.YELLOW)
 
-    assert m.total_size == 3
-    assert m.tiles[Tile.BLACK].filled == 2
-    assert m.tiles[Tile.BLUE].filled == 1
+    assert multi_line.total_size == 3
+    assert multi_line.tiles[Tile.BLACK].filled == 2
+    assert multi_line.tiles[Tile.BLUE].filled == 1
     assert l.tile == None
     assert l.filled == 0
 
 
-def test_reset():
-    m = MultiTileLine([Tile.BLACK, Tile.BLACK, Tile.BLUE])
-    m.reset()
+def test_reset(multi_line: MultiTileLine):
+    multi_line.reset()
 
-    assert m.total_size == 0
-    assert Tile.BLACK in m.tiles
-    assert Tile.BLUE in m.tiles
+    assert multi_line.total_size == 0
+    assert Tile.BLACK in multi_line.tiles
+    assert Tile.BLUE in multi_line.tiles
+
+
+def test_get_one(multi_line: MultiTileLine):
+    t = multi_line.get_one(Tile.BLACK)
+
+    assert t == Tile.BLACK
+    assert multi_line.total_size == 2
+
+
+def test_get_random(multi_line: MultiTileLine):
+    selected = multi_line.get_random(n=2)
+
+    assert selected.total_size == 2
+    assert multi_line.total_size == 1
+
+
+def test_get_random_from_with_too_few(multi_line: MultiTileLine):
+    _ = multi_line.get_random(n=2)
+    selected = multi_line.get_random(n=2)
+
+    assert selected.total_size == 1
+    assert multi_line.total_size == 0
+
+
+def test_get_random_from_empty():
+    multi_line = MultiTileLine()
+    selected = multi_line.get_random(n=1)
+
+    assert selected.total_size == 0
