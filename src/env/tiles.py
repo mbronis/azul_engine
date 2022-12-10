@@ -1,14 +1,14 @@
 """Represents game tiles."""
 from typing import Optional, List
-from enum import Enum, auto
+from enum import Enum
 
 
 class Tile(Enum):
-    BLUE = auto()
-    YELLOW = auto()
-    RED = auto()
-    BLACK = auto()
-    SNOW = auto()
+    BLUE = "blue"
+    YELLOW = "yellow"
+    RED = "red"
+    BLACK = "black"
+    SNOW = "snow"
 
 
 WallTiles = List[List[Optional[Tile]]]

@@ -6,7 +6,6 @@ from typing import Optional, List
 from copy import copy, deepcopy
 
 from src.env.tiles import Tile
-from src.env.states.line_state import SingleTileLineState
 
 
 class SingleTileLine:
@@ -86,16 +85,16 @@ class SingleTileLine:
 
         return tile
 
+    def get_state(self) -> dict:
+        return {"filled": self.filled, "size": self.size, "tile": self.tile.value}
+
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__dict__})"
 
-    def get_state(self) -> SingleTileLineState:
-        return SingleTileLineState(filled=self.filled, size=self.size, tile=self.tile)
-
 
 class MultiTileLine:
-    def __init__(self, tiles: List[Tile] = None):
-        self.tiles = {tile: SingleTileLine(tile=tile) for tile in Tile}
+    def __init__(self):
+        self.tiles: dict[Tile, SingleTileLine] = {tile: SingleTileLine(tile=tile) for tile in Tile}
 
     @classmethod
     def from_tiles(cls, tiles: List[Tile]) -> MultiTileLine:
@@ -150,6 +149,9 @@ class MultiTileLine:
     def total_filled(self) -> int:
         """Returns total number of filled tiles"""
         return sum(t.filled for t in self.tiles.values())
+
+    def get_state(self) -> dict:
+        return {t.value: l.get_state() for t, l in self.tiles.items()}
 
     def __repr__(self) -> str:
         r = f"{self.__class__.__name__}("
