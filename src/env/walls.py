@@ -1,3 +1,5 @@
+from enum import Enum, auto
+
 from src.env.tiles import Tile
 from src.env.board.wall import Wall
 
@@ -19,3 +21,11 @@ class FixedWall(Wall):
                 [Tile.YELLOW, Tile.RED, Tile.BLACK, Tile.SNOW, Tile.BLUE],
             ],
         )
+
+
+def get_wall(wall_name: str) -> Wall:
+    walls = {
+        "free": FreeWall(),
+        "fixed": FixedWall(),
+    }
+    return walls[wall_name]
