@@ -31,13 +31,7 @@ s = {
                     ["y", "r", "b", "s", "u"],
                 ],
             },
-            "pattern_lines": {
-                "pattern_line_0": {"B": (1, 1)},
-                "pattern_line_1": {None: (0, 2)},
-                "pattern_line_2": {"R": (1, 3)},
-                "pattern_line_3": {None: (0, 4)},
-                "pattern_line_4": {"S": (3, 5)},
-            },
+            "pattern_lines": [("B", 1, 1), (None, 0, 2), ("R", 1, 3), (None, 0, 4), ("S", 3, 5)],
             "floor_line": {"size": 7, "tiles": {"U": (0, 1), "Y": (2, 2), "R": (1, 1), "B": (0, 1), "S": (0, 1)}},
         }
     },

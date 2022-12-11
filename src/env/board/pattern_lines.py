@@ -23,4 +23,4 @@ class PatternLines:
             line.reset(reset_tile=True)
 
     def get_state(self) -> dict:
-        return {f"pattern_line_{i}": l.get_state() for i, l in enumerate(self._lines)}
+        return [l.get_state() for l in self._lines]

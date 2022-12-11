@@ -58,11 +58,11 @@ class AzulCliGui(CliGui):
 
     def _draw_pattern_lines(self, board_state: dict) -> Window:
         def parse_pattern_line(pattern_line: dict) -> str:
-            tile, (filled, size) = list(pattern_line.items())[0]
+            tile, filled, size = pattern_line
             return "." * (size - filled) + (tile if tile else ".") * filled
 
         lines = []
-        for pattern_line in board_state["pattern_lines"].values():
+        for pattern_line in board_state["pattern_lines"]:
             lines.append(parse_pattern_line(pattern_line))
 
         width = max(len(l) for l in lines)
