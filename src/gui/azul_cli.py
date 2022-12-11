@@ -48,10 +48,12 @@ class AzulCliGui(CliGui):
     def _draw_board(self, board_state: dict) -> Window:
         pattern_lines = self._draw_pattern_lines(board_state)
         wall = self._draw_wall(board_state)
+        floor = self._draw_floor(board_state)
 
         canvas = Window.canvas(8, 20, title=f"Score {board_state['score']}")
         canvas.add(pattern_lines, (2, 2))
         canvas.add(wall, (2, pattern_lines.shape[1] + 5))
+        canvas.add(floor, (wall.shape[0] + 3, 2))
         return canvas
 
     def _draw_pattern_lines(self, board_state: dict) -> Window:
@@ -76,4 +78,13 @@ class AzulCliGui(CliGui):
                     wall_lines[x][y] = filled_lines[x][y]
 
         wall_lines = [" ".join(l) for l in wall_lines]
-        return Window.from_string_lines(wall_lines, with_boarder=False)
+        return Window.from_string_lines(wall_lines)
+
+    def _draw_floor(self, board_state: dict) -> Window:
+        floor_state = board_state["floor_line"]
+        floor_size = floor_state["size"]
+        floor_fill = sum(fill for (fill, _) in floor_state["tiles"].values())
+
+        line = ("x" * floor_fill).ljust(floor_size, ".")
+        line = "floor:  " + line
+        return Window.from_string_lines(line)

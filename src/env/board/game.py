@@ -21,7 +21,8 @@ class AzulGame:
         self.num_factories = rules.get_num_factories(num_players)
 
         wall = get_wall(wall_type)
-        self.boards = [Board(wall) for _ in range(self.num_players)]
+        floor_size = len(rules.floor_penalties)
+        self.boards = [Board(wall, floor_size) for _ in range(self.num_players)]
         self.factories = [MultiTileLine() for _ in range(self.num_factories)]
         self.mid_factory = MultiTileLine()
         self.discarded = MultiTileLine()

@@ -12,11 +12,11 @@ from src.env.actions import AddWallTileAction, FillPatternLineAction
 
 
 class Board:
-    def __init__(self, wall: Wall) -> None:
+    def __init__(self, wall: Wall, floor_size: int) -> None:
         self.score: int = 0
         self.wall = wall
         self.pattern_lines = PatternLines(self.wall.size)
-        self.floor_line = FloorLine()
+        self.floor_line = FloorLine(floor_size)
 
     # ------------------
     # -- Info
