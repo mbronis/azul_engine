@@ -12,8 +12,9 @@ from src.env.actions import AddWallTileAction, FillPatternLineAction
 
 
 class Board:
-    def __init__(self, wall: Wall, floor_size: int) -> None:
+    def __init__(self, wall: Wall, floor_size: int, player_name: str) -> None:
         self.score: int = 0
+        self.player_name = player_name
         self.wall = wall
         self.pattern_lines = PatternLines(self.wall.size)
         self.floor_line = FloorLine(floor_size)
@@ -24,6 +25,7 @@ class Board:
     def get_state(self) -> dict:
         return {
             "score": self.score,
+            "player_name": self.player_name,
             "wall": self.wall.get_state_dict(),
             "pattern_lines": self.pattern_lines.get_state(),
             "floor_line": self.floor_line.get_state(),

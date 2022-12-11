@@ -11,7 +11,7 @@ def azul_game():
     num_players = 2
     wall_type = "fixed"
     rules = get_rules("standard")
-    game = AzulGame(num_players, wall_type, rules)
+    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules)
     state = game.reset(seed=1)
     return game, state
 
@@ -20,7 +20,7 @@ def test_reset():
     num_players = 2
     wall_type = "fixed"
     rules = get_rules("standard")
-    game = AzulGame(num_players, wall_type, rules)
+    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules)
     game.reset(seed=None)
 
     assert game.terminated == False
@@ -36,7 +36,7 @@ def test_factories_fill_when_depleted():
     rules.get_num_factories = lambda x: 5
     rules.factory_size = 4
     rules.tiles_count = 2
-    game = AzulGame(num_players, wall_type, rules)
+    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules)
     game.reset(seed=None)
 
     assert game.terminated == True

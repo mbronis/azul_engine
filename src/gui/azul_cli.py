@@ -55,7 +55,7 @@ class AzulCliGui(CliGui):
         wall = self._draw_wall(board_state)
         floor = self._draw_floor(board_state)
 
-        canvas = Window.canvas(8, 20, title=f"Name")
+        canvas = Window.canvas(8, 20, title=board_state["player_name"])
         canvas.add(score, (1, 2))
         canvas.add(pattern_lines, (2, 2))
         canvas.add(wall, (2, pattern_lines.shape[1] + 5))

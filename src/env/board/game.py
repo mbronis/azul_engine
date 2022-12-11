@@ -1,28 +1,31 @@
 import random
-from typing import Tuple
+from typing import List
 
 from src.env.board.rules import AzulRules
 from src.env.tiles import Tile
 from src.env.lines import SingleTileLine, MultiTileLine
 from src.env.board.board import Board
 from src.env.walls import get_wall
-from src.env.states.game_state import GameState
 from src.env.scoring import Scorer
 
 
 class AzulGame:
-    def __init__(self, num_players: int, wall_type: str, rules: AzulRules) -> None:
+    def __init__(self, num_players: int, wall_type: str, rules: AzulRules, player_names: List[str] = None) -> None:
         # TODO: inject dependency
         self.scorer = Scorer(rules)
 
         self.terminated: bool = None
-        self.num_players = num_players
         self.factory_size: int = rules.factory_size
         self.num_factories = rules.get_num_factories(num_players)
 
+        self.num_players = num_players
+        self.player_name = player_names
+        if not player_names or (len(player_names) != num_players):
+            self.player_name = [f"Player {i+1}" for i in range(num_players)]
+
         wall = get_wall(wall_type)
         floor_size = len(rules.floor_penalties)
-        self.boards = [Board(wall, floor_size) for _ in range(self.num_players)]
+        self.boards = [Board(wall, floor_size, name) for name in self.player_name]
         self.factories = [MultiTileLine() for _ in range(self.num_factories)]
         self.mid_factory = MultiTileLine()
         self.discarded = MultiTileLine()

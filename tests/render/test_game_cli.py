@@ -16,6 +16,7 @@ def test_azul_cli_render():
         "boards": {
             "board_1": {
                 "score": 28,
+                "player_name": "Player 1",
                 "wall": {
                     "filled": [
                         ["U", "Y", ".", ".", "."],
@@ -37,6 +38,7 @@ def test_azul_cli_render():
             },
             "board_2": {
                 "score": 35,
+                "player_name": "Player 2",
                 "wall": {
                     "filled": [
                         [".", ".", ".", "B", "."],
