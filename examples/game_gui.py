@@ -15,6 +15,7 @@ s = {
     "boards": {
         "board_1": {
             "score": 28,
+            "player_name": "Player 1",
             "wall": {
                 "filled": [
                     ["U", "Y", ".", ".", "."],
@@ -36,6 +37,7 @@ s = {
         },
         "board_2": {
             "score": 35,
+            "player_name": "Player 2",
             "wall": {
                 "filled": [
                     [".", ".", ".", "B", "."],
