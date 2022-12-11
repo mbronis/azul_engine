@@ -58,5 +58,5 @@ def test_draw_from_factory(azul_game: AzulGame):
     assert reward == 0.0
     assert state["boards"]["board_0"]["pattern_lines"]["pattern_line_0"][Tile.BLACK.value] == 1
     assert state["boards"]["board_0"]["floor_line"][Tile.BLACK.value] == 1
-    assert state["factories"]["factory_1"][Tile.BLACK.value] == 0
-    assert sum(v for v in state["factories"]["factory_1"].values()) == 2
+    assert state["factories"]["f_1"][Tile.BLACK.value] == 0
+    assert sum(v for v in state["factories"]["f_1"].values()) == 2

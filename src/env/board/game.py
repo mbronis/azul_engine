@@ -60,7 +60,7 @@ class AzulGame:
     def get_state(self) -> dict:
         state = {}
         state["boards"] = {f"board_{i}": b.get_state() for i, b in enumerate(self.boards)}
-        state["factories"] = {f"f{i}": f.get_state() for i, f in enumerate(self.factories)}
+        state["factories"] = {f"f_{i}": f.get_state() for i, f in enumerate(self.factories)}
         state["mid_factory"] = self.mid_factory.get_state()
         return state
 
@@ -76,6 +76,7 @@ class AzulGame:
         executed : bool
             if the move was valid and was performed
         """
+        # TODO: get move penalties from env
         ILLEGAL_MOVE_PENALTY = -10.0
         board = self.boards[board_no]
         if not board.can_fill_pattern_line(row, tile):

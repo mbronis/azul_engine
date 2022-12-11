@@ -1,5 +1,3 @@
-from enum import Enum, auto
-
 from src.env.tiles import Tile
 from src.env.board.wall import Wall
 
