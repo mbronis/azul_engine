@@ -63,7 +63,7 @@ class Window:
 
 
 class CliGui:
-    def __init__(self, x: int = 22, y: int = 80, fill: str = " ") -> None:
+    def __init__(self, x: int, y: int, fill: str = " ") -> None:
         self.x, self.y = x, y
         self.fill = fill
         self.image: Window = None

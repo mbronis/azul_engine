@@ -1,12 +1,12 @@
 from src.gui.cli import CliGui, Window
 
 
-c = CliGui()
+c = CliGui(20, 50)
 w = Window.from_string(
     lines=[
-        "xxxxx",
-        "xxxxx",
-        "xxxxx",
+        "xxxxxxxxxx",
+        "xxxxxxxxxx",
+        "xxxxxxxxxx",
     ],
     with_boarder=True,
     title="nice",
