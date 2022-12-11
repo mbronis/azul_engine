@@ -9,7 +9,7 @@ class Window:
     lines: List[List[str]]
 
     @classmethod
-    def from_string(cls, lines: List[str], with_boarder: bool = False, title: str = None) -> Window:
+    def from_string_lines(cls, lines: List[str], with_boarder: bool = False, title: str = None) -> Window:
         lines = [lines] if isinstance(lines, str) else lines
         w = Window(lines=[[*l] for l in lines])
         if with_boarder:
@@ -19,14 +19,14 @@ class Window:
         return w
 
     @classmethod
-    def canvas(cls, x: int, y: int, fill: str = " ") -> Window:
+    def canvas(cls, x: int, y: int, fill: str = " ", title: str = None) -> Window:
         canvas_lines = []
         for _ in range(x):
             row = []
             for _ in range(y):
                 row.append(fill)
             canvas_lines.append("".join(row))
-        return Window.from_string(canvas_lines, with_boarder=True)
+        return Window.from_string_lines(canvas_lines, with_boarder=True, title=title)
 
     @property
     def shape(self) -> Tuple[int, int]:
@@ -68,7 +68,7 @@ class Window:
     def add_title(self, title: str):
         _, y = self.shape
         title = title[: y - 4]
-        t = Window.from_string(title, with_boarder=False)
+        t = Window.from_string_lines(title, with_boarder=False)
         self.add(t, (0, 2))
 
 
