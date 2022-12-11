@@ -60,7 +60,7 @@ class StandardAzulRules(AzulRules):
 
     tiles_count = 20
     factory_size = 4
-    factories_to_players = {2: 5, 3: 7, 4: 9}
+    factories_to_players = {1: 3, 2: 5, 3: 7, 4: 9}
 
     points_self = 1
     points_neighbor = 1
