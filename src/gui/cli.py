@@ -9,9 +9,12 @@ class Window:
     lines: List[List[str]]
 
     @classmethod
-    def from_string(cls, lines: List[str], boarder: bool = True) -> Window:
+    def from_string(cls, lines: List[str], with_boarder: bool = False) -> Window:
         lines = [lines] if isinstance(lines, str) else lines
-        return Window(lines=[[*l] for l in lines])
+        w = Window(lines=[[*l] for l in lines])
+        if with_boarder:
+            w.add_boarder()
+        return w
 
     @property
     def shape(self) -> Tuple[int, int]:
@@ -26,8 +29,7 @@ class Window:
             for y, char in enumerate(row):
                 self.lines[x + ox][y + oy] = char
 
-    @staticmethod
-    def add_boarder(w: Window) -> Window:
+    def add_boarder(self):
         def get_char(pos: Tuple[int, int]) -> str:
             xx, yy = pos
             if pos in corners:
@@ -36,9 +38,9 @@ class Window:
                 return "-"
             if (yy == 0) or (yy == y):
                 return "|"
-            return " "
+            return self.lines[xx - 1][yy - 1]
 
-        x, y = w.shape
+        x, y = self.shape
         x += 1
         y += 1
         corners = [(0, 0), (x, 0), (0, y), (x, y)]
@@ -49,9 +51,7 @@ class Window:
                 row.append(get_char((xx, yy)))
             boarder_lines.append(row)
         boarder_lines = [[*l] for l in boarder_lines]
-        window = Window.from_string(boarder_lines)
-        window.add(w, (1, 1))
-        return window
+        self.lines = boarder_lines
 
 
 class CliGui:
@@ -91,17 +91,19 @@ class AzulCliGui(CliGui):
         title = self._draw_title()
         factories = self._draw_factories(state)
 
+        self.make_canvas()
         self.add(title, (0, 0))
-        self.add(factories, (2, 0))
+        self.add(factories, (2, 1))
 
     def _draw_title(self) -> Window:
         return Window.from_string("Azul Game")
 
     def _draw_factories(self, state: dict) -> Window:
-        lines = ["--- uyrbs -"]
+        width = 10
+        lines = ["    uyrbs "]
         for factory_name, factory_state in state["factories"].items():
-            state_string = "".join([str(v) for v in factory_state.values()]) + "  "
-            print(state_string)
+            state_string = "".join([str(v) for v in factory_state.values()])
             factory_line = f"{factory_name}: {state_string}"
             lines.append(factory_line)
-        return Window.from_string(lines)
+        lines = [l.ljust(width, " ") for l in lines]
+        return Window.from_string(lines, with_boarder=True)

@@ -7,8 +7,8 @@ w = Window.from_string(
         "xxxxx",
         "xxxxx",
         "xxxxx",
-    ]
+    ],
+    with_boarder=True,
 )
-wb = Window.add_boarder(w)
-c.add(wb, (5, 10))
+c.add(w, (5, 10))
 c.show()
