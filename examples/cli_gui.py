@@ -9,6 +9,7 @@ w = Window.from_string(
         "xxxxx",
     ],
     with_boarder=True,
+    title="nice",
 )
 c.add(w, (5, 10))
 c.show()
