@@ -60,7 +60,7 @@ class AzulGame:
     def get_state(self) -> dict:
         state = {}
         state["boards"] = {f"board_{i}": b.get_state() for i, b in enumerate(self.boards)}
-        state["factories"] = {f"factory_{i}": f.get_state() for i, f in enumerate(self.factories)}
+        state["factories"] = {f"f{i}": f.get_state() for i, f in enumerate(self.factories)}
         state["mid_factory"] = self.mid_factory.get_state()
         return state
 
