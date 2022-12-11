@@ -14,6 +14,10 @@ game: ## game testing
 game:
 	python examples/game.py
 
-game_cli: ## azul cli render testing
+game_cli: ## render fixed game state
 game_cli:
 	python examples/game_gui.py
+
+game_act: ## render actual game state
+game_act:
+	python examples/game_gui_act.py

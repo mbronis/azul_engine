@@ -1,10 +1,22 @@
+from typing import Tuple
 from src.gui.cli import Window, CliGui
 from tests.tiles.test_single_tile_line import line
 
 
 class AzulCliGui(CliGui):
-    def __init__(self, x: int = 23, y: int = 70) -> None:
+    def __init__(self, x: int = 24, y: int = 90) -> None:
         super().__init__(x, y)
+
+    @staticmethod
+    def players_to_canvas_shape(num_players: Tuple[int, int]):
+        """Helper method for AzulCliGui init"""
+        shapes = {
+            1: (14, 68),
+            2: (14, 90),
+            3: (24, 90),
+            4: (24, 90),
+        }
+        return shapes[num_players]
 
     def draw_state(self, state: dict) -> None:
         """Updates image with state data"""
@@ -12,16 +24,15 @@ class AzulCliGui(CliGui):
         factories = self._draw_factories(state)
         legend = self._draw_legend()
         boards = [self._draw_board(b) for b in state["boards"].values()]
-        boards *= 2
 
         self.reset_canvas()
         self.add(title, (0, 2))
         self.add(factories, (2, 2))
-        self.add(legend, (factories.shape[0] + 3, 2))
         for i, board in enumerate(boards):
             x_offset = 2 + (1 + board.shape[0]) * (i > 1)
             y_offset = 4 + factories.shape[1] + 2 + (2 + board.shape[1]) * (i % 2 == 1)
             self.add(board, (x_offset, y_offset))
+        self.add(legend, (2, 8 + factories.shape[1] + (board.shape[1] + 2) * (1 + (len(boards) > 1))))
 
     def _draw_title(self) -> Window:
         return Window.from_string_lines("Azul Game")
