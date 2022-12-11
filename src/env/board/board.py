@@ -21,6 +21,13 @@ class Board:
     # ------------------
     # -- Info
     # ------------------
+    def get_state(self) -> dict:
+        return {
+            "score": self.score,
+            "wall": self.wall.get_state_dict(),
+            "pattern_lines": self.pattern_lines.get_state(),
+            "floor_line": self.floor_line.get_state(),
+        }
 
     # ------------------
     # -- Actions Space
@@ -38,11 +45,13 @@ class Board:
     # ------------------
     # -- Actions
     # ------------------
+    # TODO: add tests
     def fill_pattern_line(self, row: int, l: SingleTileLine):
         """Fills pattern line and adds surplus to floor."""
         broken_tiles = self.pattern_lines.fill(row, l)
         self.floor_line.add_broken_tiles(broken_tiles)
 
+    # TODO: add tests
     def add_wall_tile(self, a: AddWallTileAction):
         r, c, t = a.row, a.col, a.tile
         if not self.can_tile_wall(r, c, t):

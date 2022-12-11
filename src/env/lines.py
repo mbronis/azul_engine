@@ -83,7 +83,7 @@ class SingleTileLine:
         return tile
 
     def get_state(self) -> dict:
-        return {"filled": self.filled, "size": self.size, "tile": self.tile.value}
+        return {self.tile.value if self.tile else None: self.filled}
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__dict__})"
@@ -148,7 +148,7 @@ class MultiTileLine:
         return sum(t.filled for t in self.tiles.values())
 
     def get_state(self) -> dict:
-        return {t.value: l.get_state() for t, l in self.tiles.items()}
+        return {k: v for d in self.tiles.values() for k, v in d.get_state().items()}
 
     def __repr__(self) -> str:
         r = f"{self.__class__.__name__}("

@@ -35,6 +35,13 @@ class Wall:
     def get_state(self) -> WallState:
         return WallState(size=self.size, filled=self._filled, tiles_count=self._tiles_count)
 
+    def get_state_dict(self) -> dict:
+        # wip refactor out WallState
+        return {
+            "filled": [[(t.value if t is not None else ".") for t in row] for row in self._filled],
+            "expected": [[(t.value if t is not None else ".") for t in row] for row in self._expected],
+        }
+
     def _is_expected(self, row: int, col: int, t: Tile) -> bool:
         return (self._expected[row][col] or t) == t
 
