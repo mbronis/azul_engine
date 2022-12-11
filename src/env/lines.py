@@ -83,7 +83,7 @@ class SingleTileLine:
         return tile
 
     def get_state(self) -> dict:
-        return {self.tile.value if self.tile else None: self.filled}
+        return {self.tile.value if self.tile else None: (self.filled, self.size)}
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.__dict__})"

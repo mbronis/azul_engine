@@ -2,6 +2,9 @@ from src.gui.cli import Window, CliGui
 
 
 class AzulCliGui(CliGui):
+    def __init__(self, x: int = 22, y: int = 80) -> None:
+        super().__init__(x, y)
+
     def draw_state(self, state: dict) -> None:
         """Updates image with state data"""
         title = self._draw_title()
@@ -18,7 +21,7 @@ class AzulCliGui(CliGui):
 
     def _draw_factories(self, state: dict) -> Window:
         def parse_factory_state(factory_state: dict) -> str:
-            return " ".join([str(v) if v else "." for v in factory_state.values()])
+            return " ".join([str(v[0]) if v[0] > 0 else "." for v in factory_state.values()])
 
         width = 15
         lines = ["     u y r b s "]
