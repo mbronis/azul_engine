@@ -1,4 +1,5 @@
 import random
+from typing import Tuple
 
 from src.env.board.rules import AzulRules
 from src.env.tiles import Tile
@@ -29,7 +30,7 @@ class AzulGame:
             l = SingleTileLine(tile=tile, size=rules.tiles_count, filled=0)
             self.tiles_bag.extend(l)
 
-    def reset(self, seed: int = None) -> GameState:
+    def reset(self, seed: int = None) -> dict:
         self.terminated = False
         self._set_random(seed)
 
@@ -56,6 +57,30 @@ class AzulGame:
     def _set_random(self, seed: int) -> None:
         random.seed(seed)
 
-    def get_state(self) -> GameState:
-        # TODO: implement
-        return {}, {}
+    def get_state(self) -> dict:
+        state = {}
+        state["boards"] = {f"board_{i}": b.get_state() for i, b in enumerate(self.boards)}
+        state["factories"] = {f"factory_{i}": f.get_state() for i, f in enumerate(self.factories)}
+        state["mid_factory"] = self.mid_factory.get_state()
+        return state
+
+    def action_draw_from_factory(self, factory_no: int, tile: Tile, board_no: int, row: int) -> bool:
+        """Draws all tiles from selected factory and tries to add to a pattern line.
+
+        Returns
+        -------
+        state : dict
+            game state after performing the move
+        reward : float
+            reward for the move
+        executed : bool
+            if the move was valid and was performed
+        """
+        ILLEGAL_MOVE_PENALTY = -10.0
+        board = self.boards[board_no]
+        if not board.can_fill_pattern_line(row, tile):
+            return self.get_state(), ILLEGAL_MOVE_PENALTY, False
+        factory = (self.factories + [self.mid_factory])[factory_no]
+        tiles_line = factory.get_all(tile)
+        board.fill_pattern_line(row, tiles_line)
+        return self.get_state(), 0.0, True
