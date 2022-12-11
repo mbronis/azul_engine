@@ -4,11 +4,11 @@ from enum import Enum
 
 
 class Tile(Enum):
-    BLUE = "blue"
-    YELLOW = "yellow"
-    RED = "red"
-    BLACK = "black"
-    SNOW = "snow"
+    BLUE = "u"
+    YELLOW = "y"
+    RED = "r"
+    BLACK = "b"
+    SNOW = "s"
 
 
 WallTiles = List[List[Optional[Tile]]]
