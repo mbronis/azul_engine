@@ -18,6 +18,16 @@ class Window:
             w.add_title(title)
         return w
 
+    @classmethod
+    def canvas(cls, x: int, y: int, fill: str = " ") -> Window:
+        canvas_lines = []
+        for _ in range(x):
+            row = []
+            for _ in range(y):
+                row.append(fill)
+            canvas_lines.append("".join(row))
+        return Window.from_string(canvas_lines, with_boarder=True)
+
     @property
     def shape(self) -> Tuple[int, int]:
         return len(self.lines), len(self.lines[0])
@@ -67,16 +77,10 @@ class CliGui:
         self.x, self.y = x, y
         self.fill = fill
         self.image: Window = None
-        self.make_canvas()
+        self.reset_canvas()
 
-    def make_canvas(self) -> None:
-        image_string = []
-        for _ in range(self.x):
-            row = []
-            for _ in range(self.y):
-                row.append(self.fill)
-            image_string.append("".join(row))
-        self.image = Window.from_string(image_string, with_boarder=True)
+    def reset_canvas(self) -> None:
+        self.image = Window.canvas(self.x, self.y, fill=" ")
 
     def add(self, w: Window, offset: Tuple[int, int]):
         self.image.add(w, offset)
