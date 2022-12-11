@@ -39,7 +39,7 @@ class Wall:
         # wip refactor out WallState
         return {
             "filled": [[(t.value if t is not None else ".") for t in row] for row in self._filled],
-            "expected": [[(t.value if t is not None else ".") for t in row] for row in self._expected],
+            "expected": [[(t.value.lower() if t is not None else ".") for t in row] for row in self._expected],
         }
 
     def _is_expected(self, row: int, col: int, t: Tile) -> bool:
