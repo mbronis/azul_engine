@@ -9,6 +9,7 @@ from src.env.lines import SingleTileLine, MultiTileLine
 from src.env.board.board import Board
 from src.env.walls import get_wall
 from src.env.scoring import Scorer
+from src.env.messages import Messages
 
 
 class GamePhase(Enum):
@@ -32,8 +33,15 @@ class GamePhase(Enum):
 
 
 class AzulGame:
-    def __init__(self, num_players: int, wall_type: str, rules: AzulRules, player_names: List[str] = None) -> None:
-        # TODO: inject dependency
+    def __init__(
+        self,
+        num_players: int,
+        wall_type: str,
+        rules: AzulRules,
+        messages: Messages,
+        player_names: List[str] = None,
+    ) -> None:
+        # TODO: inject dependencies (scorer, wall, ...)
         self.scorer = Scorer(rules)
 
         # init game params
@@ -57,6 +65,7 @@ class AzulGame:
             self.tiles_bag.extend(l)
 
         # init game internals
+        self.messages = messages
         self.phase: GamePhase = None
         self.round: int = None
 
@@ -120,12 +129,22 @@ class AzulGame:
         ILLEGAL_MOVE_PENALTY = -10.0
         board = self.boards[board_no]
         if not board.can_fill_pattern_line(row, tile):
-            return self.get_state(), ILLEGAL_MOVE_PENALTY, False, f"cant fill row {row} with {tile.value}"
+            return (
+                self.get_state(),
+                ILLEGAL_MOVE_PENALTY,
+                False,
+                self.messages.action_draw_fail_board.format(row=row, tile=tile.value),
+            )
         factory = (self.factories + [self.mid_factory])[factory_no]
         if not factory.has_tile(tile):
-            return self.get_state(), ILLEGAL_MOVE_PENALTY, False, f"factory {factory_no} has no {tile.value}"
+            return (
+                self.get_state(),
+                ILLEGAL_MOVE_PENALTY,
+                False,
+                self.messages.action_draw_fail_factory.format(factory_no=factory_no, tile=tile.value),
+            )
 
         tiles_line, reminder = factory.get_all(tile)
         board.fill_pattern_line(row, tiles_line)
         self.mid_factory.merge(reminder)
-        return self.get_state(), 0.0, True, "Action successful."
+        return self.get_state(), 0.0, True, self.messages.action_draw_success

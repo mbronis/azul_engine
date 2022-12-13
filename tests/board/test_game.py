@@ -1,19 +1,20 @@
 from email import message
-from os import stat
 from typing import Tuple
 import pytest
 
 from src.env.tiles import Tile
 from src.env.board.rules import get_rules
 from src.env.board.game import AzulGame
+from src.env.messages import get_messages
 
 
 @pytest.fixture
-def azul_game_state():
+def azul_game_state() -> Tuple[AzulGame, dict]:
     num_players = 2
     wall_type = "fixed"
     rules = get_rules("standard")
-    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules)
+    messages = get_messages("default")
+    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules, messages=messages)
     state = game.reset(seed=1)
     return game, state
 
@@ -22,7 +23,8 @@ def test_reset():
     num_players = 2
     wall_type = "fixed"
     rules = get_rules("standard")
-    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules)
+    messages = get_messages("default")
+    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules, messages=messages)
     game.reset(seed=None)
 
     assert game.terminated == False
@@ -35,10 +37,11 @@ def test_factories_fill_when_depleted():
     num_players = 2
     wall_type = "fixed"
     rules = get_rules("standard")
+    messages = get_messages("default")
     rules.get_num_factories = lambda x: 5
     rules.factory_size = 4
     rules.tiles_count = 2
-    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules)
+    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules, messages=messages)
     game.reset(seed=None)
     game.fill_factories()
 
@@ -47,6 +50,7 @@ def test_factories_fill_when_depleted():
     assert [f.total_filled for f in game.factories] == [4, 4, 2, 0, 0]  # only valid if len(Tile) == 5
 
 
+# TODO: add tests for various action results + messages
 def test_draw_from_factory(azul_game_state: Tuple[AzulGame, dict]):
     game, state = azul_game_state
     move = {
