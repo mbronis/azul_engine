@@ -21,3 +21,7 @@ game_cli:
 game_act: ## render actual game state
 game_act:
 	python examples/game_gui_act.py
+
+human: ## a game with human input
+human:
+	python examples/human_input.py

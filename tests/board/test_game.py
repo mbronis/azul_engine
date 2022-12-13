@@ -1,3 +1,4 @@
+from email import message
 from os import stat
 import pytest
 
@@ -38,6 +39,7 @@ def test_factories_fill_when_depleted():
     rules.tiles_count = 2
     game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules)
     game.reset(seed=None)
+    game.fill_factories()
 
     assert game.terminated == True
     assert sum(f.total_filled for f in game.factories) == len(Tile) * rules.tiles_count
@@ -52,7 +54,7 @@ def test_draw_from_factory(azul_game: AzulGame):
         "board_no": 0,
         "row": 0,
     }
-    state, reward, executed = game.action_draw_from_factory(**move)
+    state, reward, executed, message = game.action_draw_from_factory(**move)
 
     assert executed
     assert reward == 0.0

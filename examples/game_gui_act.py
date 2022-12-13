@@ -4,7 +4,7 @@ from src.env.board.game import AzulGame
 from src.gui.azul_cli import AzulCliGui
 
 
-NUM_PLAYERS = 4
+NUM_PLAYERS = 3
 
 
 def azul_game():
@@ -25,5 +25,6 @@ a = {
 state, reward, executed = game.action_draw_from_factory(**a)
 
 c = AzulCliGui(*AzulCliGui.players_to_canvas_shape(NUM_PLAYERS))
-c.draw_state(state)
+m = f"State after random init and executing: f_{a['factory_no']} -> {a['tile'].value} -> board {a['board_no']} -> row {a['row']}"
+c.draw_state(state, m)
 c.show()

@@ -1,5 +1,7 @@
+from dataclasses import dataclass
 import random
 from typing import List
+from enum import Enum
 
 from src.env.board.rules import AzulRules
 from src.env.tiles import Tile
@@ -9,20 +11,40 @@ from src.env.walls import get_wall
 from src.env.scoring import Scorer
 
 
+class GamePhase(Enum):
+    """
+    Describes different phases of Azul game.
+    Defines possible actions.
+
+    Values
+    ------
+        FACTORY
+            Phase where tiles are taken from factories and placed in pattern lines
+        WALL
+            Phase where tiles are taken from pattern lines and placed in the wall.
+        TERMINATED
+            Game is complete, no more moves are possible.
+    """
+
+    FACTORY = "factory"
+    WALL = "wall"
+    TERMINATED = "terminated"
+
+
 class AzulGame:
     def __init__(self, num_players: int, wall_type: str, rules: AzulRules, player_names: List[str] = None) -> None:
         # TODO: inject dependency
         self.scorer = Scorer(rules)
 
-        self.terminated: bool = None
+        # init game params
         self.factory_size: int = rules.factory_size
         self.num_factories = rules.get_num_factories(num_players)
-
         self.num_players = num_players
         self.player_name = player_names
         if not player_names or (len(player_names) != num_players):
             self.player_name = [f"Player {i+1}" for i in range(num_players)]
 
+        # init game components
         wall = get_wall(wall_type)
         floor_size = len(rules.floor_penalties)
         self.boards = [Board(wall, floor_size, name) for name in self.player_name]
@@ -34,9 +56,17 @@ class AzulGame:
             l = SingleTileLine(tile=tile, size=rules.tiles_count, filled=0)
             self.tiles_bag.extend(l)
 
+        # init game internals
+        self.phase: GamePhase = None
+        self.round: int = None
+
+    @property
+    def terminated(self) -> bool:
+        return self.phase == GamePhase.TERMINATED
+
     def reset(self, seed: int = None) -> dict:
-        self.terminated = False
         self._set_random(seed)
+        self.round = -1
 
         for board in self.boards:
             board.reset()
@@ -51,18 +81,22 @@ class AzulGame:
         return self.get_state()
 
     def fill_factories(self):
+        if self.tiles_bag.total_filled == 0:
+            self.phase = GamePhase.TERMINATED
+            return
+
+        self.phase = GamePhase.FACTORY
+        self.round += 1
         for factory in self.factories:
             tiles = self.tiles_bag.get_random(n=self.factory_size)
             factory.merge(tiles)
-
-        # TODO: move to method for checking terminated state (with add check for row fill in wall)
-        self.terminated = self.tiles_bag.total_filled == 0
 
     def _set_random(self, seed: int) -> None:
         random.seed(seed)
 
     def get_state(self) -> dict:
         state = {}
+        state["game"] = {"phase": self.phase.value, "round": self.round}
         state["boards"] = {f"board_{i}": b.get_state() for i, b in enumerate(self.boards)}
         state["factories"] = {f"f_{i}": f.get_state() for i, f in enumerate(self.factories)}
         state["mid_factory"] = self.mid_factory.get_state()
@@ -79,13 +113,18 @@ class AzulGame:
             reward for the move
         executed : bool
             if the move was valid and was performed
+        message : str
+            info about move execution
         """
         # TODO: get move penalties from env
         ILLEGAL_MOVE_PENALTY = -10.0
         board = self.boards[board_no]
         if not board.can_fill_pattern_line(row, tile):
-            return self.get_state(), ILLEGAL_MOVE_PENALTY, False
+            return self.get_state(), ILLEGAL_MOVE_PENALTY, False, f"cant fill row {row} with {tile.value}"
         factory = (self.factories + [self.mid_factory])[factory_no]
+        if not factory.has_tile(tile):
+            return self.get_state(), ILLEGAL_MOVE_PENALTY, False, f"factory {factory_no} has no {tile.value}"
+
         tiles_line = factory.get_all(tile)
         board.fill_pattern_line(row, tiles_line)
-        return self.get_state(), 0.0, True
+        return self.get_state(), 0.0, True, "Action successful."

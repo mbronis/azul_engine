@@ -142,6 +142,9 @@ class MultiTileLine:
         for tile_line in self.tiles.values():
             tile_line.reset()
 
+    def has_tile(self, t: Tile) -> bool:
+        return self.tiles[t].filled > 0
+
     @property
     def total_filled(self) -> int:
         """Returns total number of filled tiles"""

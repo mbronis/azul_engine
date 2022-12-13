@@ -23,7 +23,7 @@ a = {
     "board_no": 0,
     "row": 0,
 }
-state, reward, executed = game.action_draw_from_factory(**a)
+state, reward, executed, message = game.action_draw_from_factory(**a)
 print("---------------------------")
 print(f"action: {a}")
 print("---------------------------")
