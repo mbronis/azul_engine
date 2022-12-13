@@ -125,6 +125,7 @@ class AzulGame:
         if not factory.has_tile(tile):
             return self.get_state(), ILLEGAL_MOVE_PENALTY, False, f"factory {factory_no} has no {tile.value}"
 
-        tiles_line = factory.get_all(tile)
+        tiles_line, reminder = factory.get_all(tile)
         board.fill_pattern_line(row, tiles_line)
+        self.mid_factory.merge(reminder)
         return self.get_state(), 0.0, True, "Action successful."

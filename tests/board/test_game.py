@@ -1,5 +1,6 @@
 from email import message
 from os import stat
+from typing import Tuple
 import pytest
 
 from src.env.tiles import Tile
@@ -8,7 +9,7 @@ from src.env.board.game import AzulGame
 
 
 @pytest.fixture
-def azul_game():
+def azul_game_state():
     num_players = 2
     wall_type = "fixed"
     rules = get_rules("standard")
@@ -46,19 +47,21 @@ def test_factories_fill_when_depleted():
     assert [f.total_filled for f in game.factories] == [4, 4, 2, 0, 0]  # only valid if len(Tile) == 5
 
 
-def test_draw_from_factory(azul_game: AzulGame):
-    game, state = azul_game
+def test_draw_from_factory(azul_game_state: Tuple[AzulGame, dict]):
+    game, state = azul_game_state
     move = {
         "factory_no": 1,
         "tile": Tile.BLACK,
         "board_no": 0,
         "row": 0,
     }
-    state, reward, executed, message = game.action_draw_from_factory(**move)
+    state, reward, executed, _ = game.action_draw_from_factory(**move)
 
     assert executed
     assert reward == 0.0
-    assert state["boards"]["board_0"]["pattern_lines"][0] == (Tile.BLACK.value, 1, 1)
-    assert state["boards"]["board_0"]["floor_line"]["tiles"][Tile.BLACK.value] == (1, 1)
-    assert state["factories"]["f_1"][Tile.BLACK.value][0] == 0
-    assert sum(v[0] for v in state["factories"]["f_1"].values()) == 2
+    assert state["game"] == {"phase": "factory", "round": 0}
+    assert game.boards[0].pattern_lines.get_state()[0] == ("B", 1, 1)
+    assert game.boards[0].floor_line.get_state()["tiles"][Tile.BLACK.value] == (1, 1)
+    assert game.factories[1].get_state()[Tile.BLACK.value][0] == 0
+    assert game.factories[1].total_filled == 0
+    assert game.mid_factory.total_filled == 2

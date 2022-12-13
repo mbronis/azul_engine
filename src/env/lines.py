@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import random
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from copy import copy, deepcopy
 
 from src.env.tiles import Tile
@@ -109,11 +109,13 @@ class MultiTileLine:
         for t, l in m.tiles.items():
             self.tiles[t].extend(l)
 
-    def get_all(self, t: Tile) -> SingleTileLine:
-        """Returns all tiles of selected type."""
+    def get_all(self, t: Tile) -> Tuple[SingleTileLine, MultiTileLine]:
+        """Returns all tiles of selected type in a single line and rest as a reminder."""
         line = deepcopy(self.tiles[t])
-        self.tiles[t].filled = 0
-        return line
+        self.tiles[t].reset()
+        reminder = deepcopy(self)
+        self.reset()
+        return line, reminder
 
     def get_one(self, t: Tile) -> Tile:
         return self.tiles[t].get_one()

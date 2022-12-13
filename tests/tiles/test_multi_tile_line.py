@@ -96,23 +96,24 @@ def multi_line() -> MultiTileLine:
 
 
 def test_get_existing(multi_line: MultiTileLine):
-    l = multi_line.get_all(Tile.BLACK)
+    line, reminder = multi_line.get_all(Tile.BLACK)
 
-    assert multi_line.total_filled == 1
-    assert multi_line.tiles[Tile.BLACK].filled == 0
-    assert multi_line.tiles[Tile.BLUE].filled == 1
-    assert l.tile == Tile.BLACK
-    assert l.filled == 2
+    assert multi_line.total_filled == 0
+    assert line.tile == Tile.BLACK
+    assert line.filled == 2
+    assert reminder.total_filled == 1
+    assert reminder.tiles[Tile.BLUE].filled == 1
 
 
 def test_get_not_existing(multi_line: MultiTileLine):
-    l = multi_line.get_all(Tile.YELLOW)
+    line, reminder = multi_line.get_all(Tile.YELLOW)
 
-    assert multi_line.total_filled == 3
-    assert multi_line.tiles[Tile.BLACK].filled == 2
-    assert multi_line.tiles[Tile.BLUE].filled == 1
-    assert l.tile == Tile.YELLOW
-    assert l.filled == 0
+    assert multi_line.total_filled == 0
+    assert line.tile == Tile.YELLOW
+    assert line.filled == 0
+    assert reminder.total_filled == 3
+    assert reminder.tiles[Tile.BLACK].filled == 2
+    assert reminder.tiles[Tile.BLUE].filled == 1
 
 
 def test_reset(multi_line: MultiTileLine):
