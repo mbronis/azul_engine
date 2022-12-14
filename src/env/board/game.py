@@ -38,6 +38,7 @@ class AzulGame:
         num_players: int,
         wall_type: str,
         rules: AzulRules,
+        # scorer: Scorer,
         messages: Messages,
         player_names: List[str] = None,
     ) -> None:
@@ -68,6 +69,7 @@ class AzulGame:
         self.messages = messages
         self.phase: GamePhase = None
         self.round: int = None
+        self.move: int = None
 
     @property
     def terminated(self) -> bool:
@@ -75,7 +77,7 @@ class AzulGame:
 
     def reset(self, seed: int = None) -> dict:
         self._set_random(seed)
-        self.round = -1
+        self.round, self.move = -1, -1
 
         for board in self.boards:
             board.reset()
@@ -105,7 +107,7 @@ class AzulGame:
 
     def get_state(self) -> dict:
         state = {}
-        state["game"] = {"phase": self.phase.value, "round": self.round}
+        state["game"] = {"phase": self.phase.value, "round": self.round, "move": self.move}
         state["boards"] = {f"board_{i}": b.get_state() for i, b in enumerate(self.boards)}
         state["factories"] = {f"f_{i}": f.get_state() for i, f in enumerate(self.factories)}
         state["mid_factory"] = self.mid_factory.get_state()
@@ -147,4 +149,10 @@ class AzulGame:
         tiles_line, reminder = factory.get_all(tile)
         board.fill_pattern_line(tiles_line, row)
         self.mid_factory.merge(reminder)
+        self.move += 1
+        if self.all_factories_are_empty():
+            self.phase = GamePhase.WALL
         return self.get_state(), 0.0, True, self.messages.action_draw_success
+
+    def all_factories_are_empty(self) -> bool:
+        return max(f.total_filled for f in self.factories + [self.mid_factory]) == 0

@@ -69,7 +69,7 @@ def test_draw_from_factory(azul_game_state: Tuple[AzulGame, dict]):
 
     assert executed
     assert reward == 0.0
-    assert state["game"] == {"phase": "factory", "round": 0}
+    assert state["game"] == {"phase": "factory", "round": 0, "move": 0}
     assert game.boards[0].pattern_lines.get_state()[0] == ("B", 1, 1)
     assert game.boards[0].floor_line.get_state()["tiles"][Tile.BLACK.value] == (1, 1)
     assert game.factories[1].get_state()[Tile.BLACK.value][0] == 0
