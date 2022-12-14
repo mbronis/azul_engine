@@ -10,16 +10,17 @@ class AzulCliGui(CliGui):
     def players_to_canvas_shape(num_players: Tuple[int, int]):
         """Helper method for AzulCliGui init"""
         shapes = {
-            1: (16, 68),
-            2: (16, 90),
-            3: (26, 90),
-            4: (26, 90),
+            1: (17, 68),
+            2: (17, 90),
+            3: (27, 90),
+            4: (27, 90),
         }
         return shapes[num_players]
 
     def draw_state(self, state: dict, text: str = None) -> None:
         """Updates image with state data"""
         title = self._draw_title()
+        round_counter = self._draw_round(state)
         factories = self._draw_factories(state)
         legend = self._draw_legend()
         boards = [self._draw_board(b) for b in state["boards"].values()]
@@ -27,13 +28,18 @@ class AzulCliGui(CliGui):
 
         self.reset_canvas()
         self.add(title, (0, 2))
-        self.add(factories, (2, 2))
+        self.add(round_counter, (1, 2))
+        self.add(factories, (3, 2))
         for i, board in enumerate(boards):
-            x_offset = 2 + (1 + board.shape[0]) * (i > 1)
+            x_offset = 3 + (1 + board.shape[0]) * (i > 1)
             y_offset = 4 + factories.shape[1] + 2 + (2 + board.shape[1]) * (i % 2 == 1)
             self.add(board, (x_offset, y_offset))
-        self.add(legend, (2, 8 + factories.shape[1] + (board.shape[1] + 2) * (1 + (len(boards) > 1))))
-        self.add(dialog_box, (4 + (board.shape[0]) * (1 + (len(boards) > 2)), 2))
+        self.add(legend, (3, 8 + factories.shape[1] + (board.shape[1] + 2) * (1 + (len(boards) > 1))))
+        self.add(dialog_box, (5 + (board.shape[0]) * (1 + (len(boards) > 2)), 2))
+
+    def _draw_round(self, state: dict) -> Window:
+        round, move = state["game"]["round"], state["game"]["move"]
+        return Window.from_string_lines(f"round: {round} move: {move}")
 
     def _draw_title(self) -> Window:
         return Window.from_string_lines("Azul Game")
