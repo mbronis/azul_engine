@@ -49,7 +49,9 @@ class AzulCliGui(CliGui):
             factory_line = f"{factory_name}  {state_string}"
             lines.append(factory_line)
         lines.append("-" * width)
+
         lines.append(f"mid  {parse_factory_state(state['mid_factory'])}")
+        lines.append(f'1p   {"*" if state["game"]["mid_has_1p_token"] else "."}')
         lines = [l.ljust(width, " ") for l in lines]
         return Window.from_string_lines(lines, with_boarder=True, title="Factories")
 
