@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import random
-from typing import List
+from typing import List, Tuple
 from enum import Enum
 
 from src.env.board.rules import AzulRules
@@ -57,10 +57,7 @@ class AzulGame:
         self.factories = [MultiTileLine() for _ in range(self.num_factories)]
         self.mid_factory = MultiTileLine()
         self.discarded = MultiTileLine()
-        self.tiles_bag = MultiTileLine()
-        for tile in Tile:
-            l = SingleTileLine(tile=tile, size=rules.tiles_count, filled=0)
-            self.tiles_bag.extend(l)
+        self.tiles_bag = MultiTileLine(size=rules.tiles_count)
 
         # init game internals
         self.scorer = scorer
@@ -68,6 +65,20 @@ class AzulGame:
         self.phase: GamePhase = None
         self.round: int = None
         self.move: int = None
+        self.mid_has_1p_token: bool = None
+
+    def get_state(self) -> dict:
+        return {
+            "game": {
+                "phase": self.phase.value,
+                "round": self.round,
+                "move": self.move,
+                "mid_has_1p_token": self.mid_has_1p_token,
+            },
+            "boards": {f"board_{i}": b.get_state() for i, b in enumerate(self.boards)},
+            "factories": {f"f_{i}": f.get_state() for i, f in enumerate(self.factories)},
+            "mid_factory": self.mid_factory.get_state(),
+        }
 
     @property
     def terminated(self) -> bool:
@@ -75,7 +86,7 @@ class AzulGame:
 
     def reset(self, seed: int = None) -> dict:
         self._set_random(seed)
-        self.round, self.move = -1, -1
+        self.round, self.move, self.mid_has_1p_token = 0, 0, True
 
         for board in self.boards:
             board.reset()
@@ -89,6 +100,9 @@ class AzulGame:
 
         return self.get_state()
 
+    def _set_random(self, seed: int) -> None:
+        random.seed(seed)
+
     def fill_factories(self):
         if self.tiles_bag.total_filled == 0:
             self.phase = GamePhase.TERMINATED
@@ -100,25 +114,16 @@ class AzulGame:
             tiles = self.tiles_bag.get_random(n=self.factory_size)
             factory.merge(tiles)
 
-    def _set_random(self, seed: int) -> None:
-        random.seed(seed)
-
-    def get_state(self) -> dict:
-        state = {}
-        state["game"] = {"phase": self.phase.value, "round": self.round, "move": self.move}
-        state["boards"] = {f"board_{i}": b.get_state() for i, b in enumerate(self.boards)}
-        state["factories"] = {f"f_{i}": f.get_state() for i, f in enumerate(self.factories)}
-        state["mid_factory"] = self.mid_factory.get_state()
-        return state
-
-    def action_draw_from_factory(self, factory_no: int, tile: Tile, board_no: int, row: int) -> bool:
+    def action_draw_from_factory(
+        self, factory_no: int, tile: Tile, board_no: int, row: int
+    ) -> Tuple[dict, int, bool, str]:
         """Draws all tiles from selected factory and tries to add to a pattern line.
 
         Returns
         -------
         state : dict
             game state after performing the move
-        reward : float
+        reward : int
             reward for the move
         executed : bool
             if the move was valid and was performed
@@ -148,9 +153,19 @@ class AzulGame:
         board.fill_pattern_line(tiles_line, row)
         self.mid_factory.merge(reminder)
         self.move += 1
+        if (factory == self.mid_factory) and self.mid_has_1p_token:
+            self.move_1p_token_to_board(board)
         if self.all_factories_are_empty():
             self.phase = GamePhase.WALL
         return self.get_state(), 0.0, True, self.messages.action_draw_success
 
+    def move_1p_token_to_board(self, board: Board) -> None:
+        self.mid_has_1p_token = False
+        board.add_1p_token()
+
     def all_factories_are_empty(self) -> bool:
         return max(f.total_filled for f in self.factories + [self.mid_factory]) == 0
+
+    def action_fill_wall(self, board_no: int) -> Tuple[dict, int, bool, str]:
+        """Fills wall"""
+        pass

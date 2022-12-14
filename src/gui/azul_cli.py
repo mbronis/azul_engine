@@ -54,8 +54,8 @@ class AzulCliGui(CliGui):
         return Window.from_string_lines(lines, with_boarder=True, title="Factories")
 
     def _draw_legend(self) -> Window:
-        lines = ["u - blue", "y - yellow", "r - red", "b - black", "s - snow"]
-        width = max(15, max(len(l) for l in lines) + 3)
+        lines = ["u - blue", "y - yellow", "r - red", "b - black", "s - snow", "* - 1p token"]
+        width = max(15, max(len(l) for l in lines))
         lines.append("-" * width)
         lines.extend(["x - required", "X - filled"])
         lines = [l.ljust(width, " ") for l in lines]
@@ -63,19 +63,26 @@ class AzulCliGui(CliGui):
 
     def _draw_board(self, board_state: dict) -> Window:
         score = self._draw_score(board_state)
+        has_1p = self._draw_1p(board_state)
         pattern_lines = self._draw_pattern_lines(board_state)
         wall = self._draw_wall(board_state)
         floor = self._draw_floor(board_state)
 
         canvas = Window.canvas(8, 20, title=board_state["player_name"])
         canvas.add(score, (1, 2))
+        canvas.add(has_1p, (1, score.shape[1] + 5))
         canvas.add(pattern_lines, (2, 2))
         canvas.add(wall, (2, pattern_lines.shape[1] + 5))
         canvas.add(floor, (wall.shape[0] + 3, 2))
         return canvas
 
     def _draw_score(self, board_state: dict) -> Window:
-        return Window.from_string_lines(f"score: {board_state['score']}")
+        score = str(board_state["score"]).ljust(3, " ")
+        return Window.from_string_lines(f"score: {score}")
+
+    def _draw_1p(self, board_state: dict) -> Window:
+        has_1p = board_state["floor_line"]["has_1p_token"]
+        return Window.from_string_lines(f"1p [{'*' if has_1p else ' '}]")
 
     def _draw_pattern_lines(self, board_state: dict) -> Window:
         def parse_pattern_line(pattern_line: dict) -> str:
@@ -105,6 +112,7 @@ class AzulCliGui(CliGui):
         floor_state = board_state["floor_line"]
         floor_size = floor_state["size"]
         floor_fill = sum(fill for (fill, _) in floor_state["tiles"].values())
+        floor_fill += int(floor_state["has_1p_token"])
 
         line = ("x" * floor_fill).ljust(floor_size, ".")
         line = "floor:  " + line

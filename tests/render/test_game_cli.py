@@ -34,7 +34,11 @@ def test_azul_cli_render():
                     ],
                 },
                 "pattern_lines": [("B", 1, 1), (None, 0, 2), ("R", 1, 3), (None, 0, 4), ("S", 3, 5)],
-                "floor_line": {"size": 7, "tiles": {"U": (0, 1), "Y": (2, 2), "R": (1, 1), "B": (0, 1), "S": (0, 1)}},
+                "floor_line": {
+                    "has_1p_token": True,
+                    "size": 7,
+                    "tiles": {"U": (0, 1), "Y": (2, 2), "R": (1, 1), "B": (0, 1), "S": (0, 1)},
+                },
             },
             "board_2": {
                 "score": 35,
@@ -56,7 +60,11 @@ def test_azul_cli_render():
                     ],
                 },
                 "pattern_lines": [(None, 0, 1), ("U", 2, 2), ("R", 2, 3), (None, 0, 4), (None, 0, 5)],
-                "floor_line": {"size": 7, "tiles": {"U": (1, 1), "Y": (0, 2), "R": (0, 1), "B": (0, 1), "S": (0, 1)}},
+                "floor_line": {
+                    "has_1p_token": False,
+                    "size": 7,
+                    "tiles": {"U": (1, 1), "Y": (0, 2), "R": (0, 1), "B": (0, 1), "S": (0, 1)},
+                },
             },
         },
     }

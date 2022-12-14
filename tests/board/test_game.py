@@ -1,4 +1,3 @@
-from email import message
 from typing import Tuple
 import pytest
 
@@ -73,9 +72,30 @@ def test_draw_from_factory(azul_game_state: Tuple[AzulGame, dict]):
 
     assert executed
     assert reward == 0.0
-    assert state["game"] == {"phase": "factory", "round": 0, "move": 0}
+    assert state["game"] == {"phase": "factory", "round": 1, "move": 1, "mid_has_1p_token": True}
     assert game.boards[0].pattern_lines.get_state()[0] == ("B", 1, 1)
     assert game.boards[0].floor_line.get_state()["tiles"][Tile.BLACK.value] == (1, 1)
     assert game.factories[1].get_state()[Tile.BLACK.value][0] == 0
     assert game.factories[1].total_filled == 0
     assert game.mid_factory.total_filled == 2
+
+
+def test_draw_from_mid_adds_1p_token(azul_game_state: Tuple[AzulGame, dict]):
+    game, state = azul_game_state
+    move_1 = {
+        "factory_no": 1,
+        "tile": Tile.BLACK,
+        "board_no": 0,
+        "row": 0,
+    }
+    move_2 = {
+        "factory_no": 5,
+        "tile": Tile.RED,
+        "board_no": 0,
+        "row": 1,
+    }
+    game.action_draw_from_factory(**move_1)
+    state, *_ = game.action_draw_from_factory(**move_2)
+
+    assert state["game"] == {"phase": "factory", "round": 1, "move": 2, "mid_has_1p_token": False}
+    assert game.boards[0].floor_line.get_state()["has_1p_token"] == True

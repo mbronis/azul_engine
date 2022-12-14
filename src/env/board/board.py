@@ -13,7 +13,7 @@ from src.env.actions import AddWallTileAction, FillPatternLineAction
 
 class Board:
     def __init__(self, wall: Wall, floor_size: int, player_name: str) -> None:
-        self.score: int = 0
+        self.score: int = None
         self.player_name = player_name
         self.wall = wall
         self.pattern_lines = PatternLines(self.wall.size)
@@ -30,6 +30,9 @@ class Board:
             "pattern_lines": self.pattern_lines.get_state(),
             "floor_line": self.floor_line.get_state(),
         }
+
+    def add_1p_token(self) -> None:
+        self.floor_line.add_1p_token()
 
     # ------------------
     # -- Actions Space
@@ -96,6 +99,7 @@ class Board:
         self.score = max(0, self.score + value)
 
     def reset(self) -> None:
+        self.score = 0
         self.wall.reset()
         self.pattern_lines.reset()
         self.floor_line.reset()
