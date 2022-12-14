@@ -3,13 +3,15 @@ from src.gui.text import print_state
 from src.env.tiles import Tile
 from src.env.board.rules import get_rules
 from src.env.board.game import AzulGame
+from src.env.messages import get_messages
 
 
 def azul_game():
     num_players = 2
     wall_type = "fixed"
     rules = get_rules("standard")
-    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules)
+    messages = get_messages("default")
+    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules, messages=messages)
     state = game.reset(seed=1)
     return game, state
 
@@ -23,8 +25,8 @@ a = {
     "board_no": 0,
     "row": 0,
 }
-state, reward, executed = game.action_draw_from_factory(**a)
+state, reward, executed, message = game.action_draw_from_factory(**a)
 print("---------------------------")
 print(f"action: {a}")
 print("---------------------------")
-print_state(state)
+print(state)
