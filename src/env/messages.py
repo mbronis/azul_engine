@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-
+# TODO: add gui labels
 @dataclass
 class Messages:
     welcome_message: str = field(init=False)

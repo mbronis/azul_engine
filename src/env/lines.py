@@ -90,8 +90,8 @@ class SingleTileLine:
 
 
 class MultiTileLine:
-    def __init__(self):
-        self.tiles: dict[Tile, SingleTileLine] = {tile: SingleTileLine(tile=tile) for tile in Tile}
+    def __init__(self, size: int = 1):
+        self.tiles: dict[Tile, SingleTileLine] = {tile: SingleTileLine(tile=tile, size=size) for tile in Tile}
 
     @classmethod
     def from_tiles(cls, tiles: List[Tile]) -> MultiTileLine:
@@ -117,15 +117,6 @@ class MultiTileLine:
         self.reset()
         return line, reminder
 
-    def get_one(self, t: Tile) -> Tile:
-        return self.tiles[t].get_one()
-
-    def _get_one_random(self) -> Tile:
-        """Returns single tile selected at random from filled tiles."""
-        weights = [self.tiles[t].filled for t in Tile]
-        tile = random.choices(list(Tile), weights=weights)[0]
-        return self.get_one(tile)
-
     def get_random(self, n: int) -> MultiTileLine:
         """Selects n tiles at random from tiles."""
         n = min(n, self.total_filled)
@@ -134,6 +125,15 @@ class MultiTileLine:
             tile = self._get_one_random()
             selected.append(tile)
         return MultiTileLine.from_tiles(selected)
+
+    def _get_one_random(self) -> Tile:
+        """Returns single tile selected at random from filled tiles."""
+        weights = [self.tiles[t].filled for t in Tile]
+        tile = random.choices(list(Tile), weights=weights)[0]
+        return self._get_one(tile)
+
+    def _get_one(self, t: Tile) -> Tile:
+        return self.tiles[t].get_one()
 
     def fill_max(self) -> None:
         """Fills all tiles up to the size."""

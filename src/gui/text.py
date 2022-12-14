@@ -11,4 +11,4 @@ def print_board(s: dict):
     print(f"  filled:   {s['wall']['filled']}")
     print(f"  expected: {s['wall']['expected']}")
     print(f"  pattern:  {s['pattern_lines']}")
-    print(f"  floor:    {s['floor_line']['tiles']}")
+    print(f"  floor:    {s['floor_line']['tiles']}, 1p: {s['floor_line']['has_1p_token']}")

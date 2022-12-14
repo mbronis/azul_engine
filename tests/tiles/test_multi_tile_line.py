@@ -125,7 +125,7 @@ def test_reset(multi_line: MultiTileLine):
 
 
 def test_get_one(multi_line: MultiTileLine):
-    t = multi_line.get_one(Tile.BLACK)
+    t = multi_line._get_one(Tile.BLACK)
 
     assert t == Tile.BLACK
     assert multi_line.total_filled == 2
