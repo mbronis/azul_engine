@@ -38,13 +38,10 @@ class AzulGame:
         num_players: int,
         wall_type: str,
         rules: AzulRules,
-        # scorer: Scorer,
+        scorer: Scorer,
         messages: Messages,
         player_names: List[str] = None,
     ) -> None:
-        # TODO: inject dependencies (scorer, wall, ...)
-        self.scorer = Scorer(rules)
-
         # init game params
         self.factory_size: int = rules.factory_size
         self.num_factories = rules.get_num_factories(num_players)
@@ -66,6 +63,7 @@ class AzulGame:
             self.tiles_bag.extend(l)
 
         # init game internals
+        self.scorer = scorer
         self.messages = messages
         self.phase: GamePhase = None
         self.round: int = None

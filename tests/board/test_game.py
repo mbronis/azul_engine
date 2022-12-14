@@ -5,6 +5,7 @@ import pytest
 from src.env.tiles import Tile
 from src.env.board.rules import get_rules
 from src.env.board.game import AzulGame
+from src.env.scoring import Scorer
 from src.env.messages import get_messages
 
 
@@ -13,8 +14,9 @@ def azul_game_state() -> Tuple[AzulGame, dict]:
     num_players = 2
     wall_type = "fixed"
     rules = get_rules("standard")
+    scorer = Scorer(rules)
     messages = get_messages("default")
-    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules, messages=messages)
+    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules, scorer=scorer, messages=messages)
     state = game.reset(seed=1)
     return game, state
 
@@ -23,8 +25,9 @@ def test_reset():
     num_players = 2
     wall_type = "fixed"
     rules = get_rules("standard")
+    scorer = Scorer(rules)
     messages = get_messages("default")
-    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules, messages=messages)
+    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules, scorer=scorer, messages=messages)
     game.reset(seed=None)
 
     assert game.terminated == False
@@ -37,11 +40,12 @@ def test_factories_fill_when_depleted():
     num_players = 2
     wall_type = "fixed"
     rules = get_rules("standard")
+    scorer = Scorer(rules)
     messages = get_messages("default")
     rules.get_num_factories = lambda x: 5
     rules.factory_size = 4
     rules.tiles_count = 2
-    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules, messages=messages)
+    game = AzulGame(num_players=num_players, wall_type=wall_type, rules=rules, scorer=scorer, messages=messages)
     game.reset(seed=None)
     game.fill_factories()
 
