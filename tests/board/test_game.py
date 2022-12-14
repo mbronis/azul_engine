@@ -51,6 +51,12 @@ def test_factories_fill_when_depleted():
 
 
 # TODO: add tests for various action results + messages
+# from factory/mid to empty line
+# from factory/mid to non empty non full
+# from factory/mid to floor
+# check: row reminder to floor, factory reminder to mid, mid reminder remains in mid, floor can overflow
+# bad tile from factory/mid
+# bad target 3row
 def test_draw_from_factory(azul_game_state: Tuple[AzulGame, dict]):
     game, state = azul_game_state
     move = {

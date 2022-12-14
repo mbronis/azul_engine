@@ -128,7 +128,7 @@ class AzulGame:
         # TODO: get move penalties from env
         ILLEGAL_MOVE_PENALTY = -10.0
         board = self.boards[board_no]
-        if not board.can_fill_pattern_line(row, tile):
+        if not board.can_fill_pattern_line(tile, row):
             return (
                 self.get_state(),
                 ILLEGAL_MOVE_PENALTY,
@@ -145,6 +145,6 @@ class AzulGame:
             )
 
         tiles_line, reminder = factory.get_all(tile)
-        board.fill_pattern_line(row, tiles_line)
+        board.fill_pattern_line(tiles_line, row)
         self.mid_factory.merge(reminder)
         return self.get_state(), 0.0, True, self.messages.action_draw_success

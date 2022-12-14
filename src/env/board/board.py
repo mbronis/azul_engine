@@ -34,7 +34,9 @@ class Board:
     # ------------------
     # -- Actions Space
     # ------------------
-    def can_fill_pattern_line(self, row: int, t: Tile) -> bool:
+    def can_fill_pattern_line(self, t: Tile, row: int = None) -> bool:
+        if row is None:
+            return True
         if not self.pattern_lines.can_add_tile(row, t):
             return False
         if not self.wall.can_add_tile_in_row(row, t):
@@ -48,10 +50,13 @@ class Board:
     # -- Actions
     # ------------------
     # TODO: add tests
-    def fill_pattern_line(self, row: int, l: SingleTileLine):
-        """Fills pattern line and adds surplus to floor."""
-        broken_tiles = self.pattern_lines.fill(row, l)
-        self.floor_line.add_broken_tiles(broken_tiles)
+    def fill_pattern_line(self, l: SingleTileLine, row: int = None):
+        """Fills pattern line and adds surplus to floor.
+        If row not provided fills floor with whole line.
+        """
+        if row is not None:
+            l = self.pattern_lines.fill(row, l)
+        self.floor_line.add_broken_tiles(l)
 
     # TODO: add tests
     def add_wall_tile(self, a: AddWallTileAction):
